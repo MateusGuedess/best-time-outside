@@ -9,23 +9,23 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 
 ## Sumário
 
-| #   | Decisão                                    | Escolha                              | Status   |
-| --- | ------------------------------------------ | ------------------------------------ | -------- |
-| 001 | Plataforma base                            | Expo (managed workflow)              | Aceita   |
-| 002 | Linguagem                                  | TypeScript (strict)                  | Aceita   |
-| 003 | Navegação                                  | Expo Router                          | Aceita   |
-| 004 | Estado de servidor / data fetching         | TanStack Query                       | Aceita   |
-| 005 | Validação das respostas da API             | Zod                                  | Aceita   |
-| 006 | Cliente HTTP                               | `fetch` nativo + wrapper fino        | Aceita   |
-| 007 | Estilização                                | NativeWind v4 + tema semântico       | Aceita   |
-| 008 | Organização de pastas                      | Por tipo + algoritmo isolado         | Aceita   |
-| 009 | Algoritmo de recomendação                  | Score × chuva + janela, dia e noite  | Aceita   |
-| 010 | Horizonte da recomendação                  | Dia + noite (até 02h), fallback amanhã | Aceita   |
-| 011 | UX da busca                                | Debounce 350 ms, mínimo 2 caracteres | Aceita   |
-| 012 | Persistência local (buscas recentes)       | AsyncStorage + validação Zod         | Aceita   |
-| 013 | Idioma, unidades e fuso                    | pt/en/es (i18next), unidades do aparelho, fuso da cidade | Aceita   |
-| 014 | Estratégia de testes                       | Jest + RNTL, foco no domínio         | Aceita   |
-| 015 | Qualidade de código                        | ESLint + Prettier + `tsc` no CI      | Aceita   |
+| #   | Decisão                              | Escolha                                                  | Status |
+| --- | ------------------------------------ | -------------------------------------------------------- | ------ |
+| 001 | Plataforma base                      | Expo (managed workflow)                                  | Aceita |
+| 002 | Linguagem                            | TypeScript (strict)                                      | Aceita |
+| 003 | Navegação                            | Expo Router                                              | Aceita |
+| 004 | Estado de servidor / data fetching   | TanStack Query                                           | Aceita |
+| 005 | Validação das respostas da API       | Zod                                                      | Aceita |
+| 006 | Cliente HTTP                         | `fetch` nativo + wrapper fino                            | Aceita |
+| 007 | Estilização                          | NativeWind v4 + tema semântico                           | Aceita |
+| 008 | Organização de pastas                | Por tipo + algoritmo isolado                             | Aceita |
+| 009 | Algoritmo de recomendação            | Score × chuva + janela, dia e noite                      | Aceita |
+| 010 | Horizonte da recomendação            | Dia + noite (até 02h), fallback amanhã                   | Aceita |
+| 011 | UX da busca                          | Debounce 350 ms, mínimo 2 caracteres                     | Aceita |
+| 012 | Persistência local (buscas recentes) | AsyncStorage + validação Zod                             | Aceita |
+| 013 | Idioma, unidades e fuso              | pt/en/es (i18next), unidades do aparelho, fuso da cidade | Aceita |
+| 014 | Estratégia de testes                 | Jest + RNTL, foco no domínio                             | Aceita |
+| 015 | Qualidade de código                  | ESLint + Prettier + `tsc` no CI                          | Aceita |
 
 ---
 
@@ -35,24 +35,24 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 
 **Contexto:** o avaliador precisa rodar o projeto com o mínimo de atrito. O app não usa nenhum módulo nativo exótico.
 
-| Alternativa         | Prós | Contras |
-| ------------------- | ---- | ------- |
-| **Expo (managed)**  | Roda com `npx expo start` + Expo Go, sem Android Studio/Xcode. É a recomendação oficial da documentação do React Native para novos projetos. Inclui SDKs prontos (location, storage, fonts). Builds na nuvem via EAS, se necessário. | Menos controle sobre o código nativo (mitigado por *prebuild* / dev client, caso precise). Bundle um pouco maior. |
-| React Native CLI    | Controle total sobre o nativo. | Setup pesado para o avaliador (JDK, Android SDK, CocoaPods). Mais tempo gasto com infraestrutura do que com produto. |
+| Alternativa        | Prós                                                                                                                                                                                                                                 | Contras                                                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **Expo (managed)** | Roda com `npx expo start` + Expo Go, sem Android Studio/Xcode. É a recomendação oficial da documentação do React Native para novos projetos. Inclui SDKs prontos (location, storage, fonts). Builds na nuvem via EAS, se necessário. | Menos controle sobre o código nativo (mitigado por _prebuild_ / dev client, caso precise). Bundle um pouco maior.    |
+| React Native CLI   | Controle total sobre o nativo.                                                                                                                                                                                                       | Setup pesado para o avaliador (JDK, Android SDK, CocoaPods). Mais tempo gasto com infraestrutura do que com produto. |
 
 **Decisão:** Expo. O teste avalia UX e produto, não configuração de nativo, e a facilidade de rodar faz parte da experiência de quem avalia. O app é simples e não justifica o custo de manter Gradle e Xcode build system.
 
 **Observações:**
 
-- Expo não é uma alternativa *ao* React Native: é um framework sobre ele, recomendado pela documentação oficial do RN para novos projetos.
-- **Necessidade nativa futura não reabre a decisão:** com Continuous Native Generation (`expo prebuild`) e *config plugins*, customizações nativas são declaradas no `app.json`. As pastas `android/` e `ios/` são geradas, não versionadas nem editadas à mão.
+- Expo não é uma alternativa _ao_ React Native: é um framework sobre ele, recomendado pela documentação oficial do RN para novos projetos.
+- **Necessidade nativa futura não reabre a decisão:** com Continuous Native Generation (`expo prebuild`) e _config plugins_, customizações nativas são declaradas no `app.json`. As pastas `android/` e `ios/` são geradas, não versionadas nem editadas à mão.
 
 **Riscos e mitigações:**
 
-| Risco | Mitigação |
-| ----- | --------- |
+| Risco                                                                                          | Mitigação                                                                                                 |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | O Expo Go da loja só suporta o SDK mais recente. O avaliador pode ter uma versão incompatível. | Versão do SDK travada e explícita no README. Alternativa documentada: `npx expo run:android` / `run:ios`. |
-| O avaliador pode não querer configurar nada. | (Opcional) APK gerado via EAS Build com link no README. |
+| O avaliador pode não querer configurar nada.                                                   | (Opcional) APK gerado via EAS Build com link no README.                                                   |
 
 ---
 
@@ -60,10 +60,10 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 
 **Status:** Aceita
 
-| Alternativa    | Prós | Contras |
-| -------------- | ---- | ------- |
-| **TypeScript** | Tipos documentam os contratos da API e do domínio. Refatoração segura. É o padrão de mercado para vaga sênior. | Um pouco mais de verbosidade. |
-| JavaScript     | Mais rápido de escrever. | Sem garantia de contrato. Passa uma impressão pior em avaliação de organização de código. |
+| Alternativa    | Prós                                                                                                           | Contras                                                                                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **TypeScript** | Tipos documentam os contratos da API e do domínio. Refatoração segura. É o padrão de mercado para vaga sênior. | Um pouco mais de verbosidade.                                                             |
+| JavaScript     | Mais rápido de escrever.                                                                                       | Sem garantia de contrato. Passa uma impressão pior em avaliação de organização de código. |
 
 **Decisão:** TypeScript com `strict: true`. Os tipos das respostas da API são **inferidos dos schemas Zod** (ver 005), para não duplicar definições.
 
@@ -73,13 +73,13 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 
 **`tsconfig.json`:**
 
-| Opção | Valor | Motivo |
-| ----- | ----- | ------ |
-| `extends` | `expo/tsconfig.base` | JSX, `moduleResolution` e `target` corretos para o Metro, mantidos pelo Expo. |
-| `strict` | `true` | Ver acima. |
-| `noUncheckedIndexedAccess` | `true` | Não faz parte do `strict`. A Forecast API retorna arrays paralelos (`hourly.time[i]`, `hourly.temperature_2m[i]`), e a flag tipa `arr[i]` como `T \| undefined`, protegendo o algoritmo, que é todo baseado em índices. |
-| `exactOptionalPropertyTypes` | desligado | Correto na teoria, mas gera atrito com tipos de bibliotecas com pouco ganho neste projeto. |
-| `paths` | `@/*` → `src/*` | Imports legíveis, sem `../../../`. |
+| Opção                        | Valor                | Motivo                                                                                                                                                                                                                  |
+| ---------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `extends`                    | `expo/tsconfig.base` | JSX, `moduleResolution` e `target` corretos para o Metro, mantidos pelo Expo.                                                                                                                                           |
+| `strict`                     | `true`               | Ver acima.                                                                                                                                                                                                              |
+| `noUncheckedIndexedAccess`   | `true`               | Não faz parte do `strict`. A Forecast API retorna arrays paralelos (`hourly.time[i]`, `hourly.temperature_2m[i]`), e a flag tipa `arr[i]` como `T \| undefined`, protegendo o algoritmo, que é todo baseado em índices. |
+| `exactOptionalPropertyTypes` | desligado            | Correto na teoria, mas gera atrito com tipos de bibliotecas com pouco ganho neste projeto.                                                                                                                              |
+| `paths`                      | `@/*` → `src/*`      | Imports legíveis, sem `../../../`.                                                                                                                                                                                      |
 
 **Atenção:** o Metro/Babel remove tipos **sem checá-los**, então o app roda mesmo com erro de tipo. A verificação real acontece com `tsc --noEmit` no script `check` e no CI (ver 015).
 
@@ -91,13 +91,13 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 
 **Contexto:** o app tem duas telas em fluxo linear: busca → recomendação da cidade.
 
-**Observação:** o Expo Router é construído **sobre** o React Navigation (o `Stack` dele é o `native-stack`). A escolha real é *como declarar rotas*: por arquivos ou por código.
+**Observação:** o Expo Router é construído **sobre** o React Navigation (o `Stack` dele é o `native-stack`). A escolha real é _como declarar rotas_: por arquivos ou por código.
 
-| Alternativa          | Prós | Contras |
-| -------------------- | ---- | ------- |
-| **Expo Router**      | Rotas por arquivos: a estrutura de pastas é o mapa do app. Deep links automáticos (`/city/[id]`), rotas tipadas, padrão do `create-expo-app`, coerente com a 001. | Convenções a conhecer (`_layout`, `[param]`, grupos). Acoplado ao Expo. A pasta `app/` mistura rotas e telas, se não houver disciplina. |
-| React Navigation (v7) | Explícito, sem "mágica", funciona fora do Expo, padrão histórico do mercado. A API estática da v7 reduziu o boilerplate e infere tipos. | Deep linking e tipagem exigem mais configuração. Sem ganho real para duas telas dentro do Expo. |
-| Sem navegação (estado local) | Mínimo absoluto. | Sem gesto/botão de voltar nativo e sem deep link. Não escala. |
+| Alternativa                  | Prós                                                                                                                                                              | Contras                                                                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Expo Router**              | Rotas por arquivos: a estrutura de pastas é o mapa do app. Deep links automáticos (`/city/[id]`), rotas tipadas, padrão do `create-expo-app`, coerente com a 001. | Convenções a conhecer (`_layout`, `[param]`, grupos). Acoplado ao Expo. A pasta `app/` mistura rotas e telas, se não houver disciplina. |
+| React Navigation (v7)        | Explícito, sem "mágica", funciona fora do Expo, padrão histórico do mercado. A API estática da v7 reduziu o boilerplate e infere tipos.                           | Deep linking e tipagem exigem mais configuração. Sem ganho real para duas telas dentro do Expo.                                         |
+| Sem navegação (estado local) | Mínimo absoluto.                                                                                                                                                  | Sem gesto/botão de voltar nativo e sem deep link. Não escala.                                                                           |
 
 **Decisão:** Expo Router.
 
@@ -114,11 +114,11 @@ Arquivos em `src/app/` são as telas e compõem componentes de `src/components` 
 
 **Princípio:** params de rota carregam **identidade** (quem: o `id`), não **dados** (como: nome, coordenadas, fuso). Os dados vêm de uma fonte de verdade: a API, com o cache do TanStack Query na frente.
 
-| Opção | Prós | Contras |
-| ----- | ---- | ------- |
-| Objeto da cidade nos params | Nenhuma requisição extra. | Params precisam ser serializáveis e viram URL. O deep link quebra. Anti-pattern. |
-| `lat`/`lon`/`name`/`timezone` nos params | Sem requisição extra. O deep link funciona. | URL vira transporte de dados, feia e manipulável. Cópia que pode divergir da fonte. |
-| **Só `id` + busca por id** | URL limpa, deep link funciona, fonte única de verdade. | Uma requisição extra, **eliminada pelo cache semeado** (abaixo). |
+| Opção                                    | Prós                                                   | Contras                                                                             |
+| ---------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Objeto da cidade nos params              | Nenhuma requisição extra.                              | Params precisam ser serializáveis e viram URL. O deep link quebra. Anti-pattern.    |
+| `lat`/`lon`/`name`/`timezone` nos params | Sem requisição extra. O deep link funciona.            | URL vira transporte de dados, feia e manipulável. Cópia que pode divergir da fonte. |
+| **Só `id` + busca por id**               | URL limpa, deep link funciona, fonte única de verdade. | Uma requisição extra, **eliminada pelo cache semeado** (abaixo).                    |
 
 **Como evitamos a requisição duplicada:** ao tocar num resultado da busca, a cidade já está em mãos. Ela é gravada no cache antes de navegar:
 
@@ -162,12 +162,12 @@ A comparação é posicional nos itens do array, mas **ignora a ordem das propri
 
 **Contexto:** todo o estado relevante vem da API. Precisamos de loading, erro, retry, cache e cancelamento de buscas obsoletas.
 
-| Alternativa          | Prós | Contras |
-| -------------------- | ---- | ------- |
-| **TanStack Query**   | Cache por chave: voltar para uma cidade já vista é instantâneo. `retry`, `staleTime`, cancelamento via `AbortSignal`, `placeholderData` para a busca não "piscar". Estados de loading/erro padronizados. | Dependência extra (~13 kB gzip). Exige entender as chaves de query. |
-| `useEffect` + `fetch` | Zero dependências. | Race conditions na busca digitada, sem cache, e acabamos reimplementando metade do TanStack Query, com bugs. |
-| Redux Toolkit / RTK Query | Robusto. | Excessivo para um app sem estado global de cliente. |
-| SWR                  | Leve e simples. | Menos controle sobre mutations e cancelamento. Menor adoção em RN. |
+| Alternativa               | Prós                                                                                                                                                                                                     | Contras                                                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **TanStack Query**        | Cache por chave: voltar para uma cidade já vista é instantâneo. `retry`, `staleTime`, cancelamento via `AbortSignal`, `placeholderData` para a busca não "piscar". Estados de loading/erro padronizados. | Dependência extra (~13 kB gzip). Exige entender as chaves de query.                                          |
+| `useEffect` + `fetch`     | Zero dependências.                                                                                                                                                                                       | Race conditions na busca digitada, sem cache, e acabamos reimplementando metade do TanStack Query, com bugs. |
+| Redux Toolkit / RTK Query | Robusto.                                                                                                                                                                                                 | Excessivo para um app sem estado global de cliente.                                                          |
+| SWR                       | Leve e simples.                                                                                                                                                                                          | Menos controle sobre mutations e cancelamento. Menor adoção em RN.                                           |
 
 **Decisão:** TanStack Query. Não haverá biblioteca de estado global: o pouco estado de cliente (buscas recentes, preferência de atividade) fica em hooks e contexto.
 
@@ -187,11 +187,11 @@ Cada camada só conhece a de baixo: a tela não sabe que existe `fetch`, e o `ht
 
 ### Configuração por tipo de dado
 
-| Query | `staleTime` | Motivo |
-| ----- | ----------- | ------ |
-| Busca de cidades (`cityKeys.search`) | 24 h | Cidades não mudam. |
-| Cidade por id (`cityKeys.detail`) | 24 h | Idem. |
-| Previsão (`forecastKeys.byCoords`) | 15 min | Muda, mas não a cada segundo. Voltar à tela não refaz a requisição. |
+| Query                                | `staleTime` | Motivo                                                              |
+| ------------------------------------ | ----------- | ------------------------------------------------------------------- |
+| Busca de cidades (`cityKeys.search`) | 24 h        | Cidades não mudam.                                                  |
+| Cidade por id (`cityKeys.detail`)    | 24 h        | Idem.                                                               |
+| Previsão (`forecastKeys.byCoords`)   | 15 min      | Muda, mas não a cada segundo. Voltar à tela não refaz a requisição. |
 
 **Retry seletivo:** `retry: (count, error) => isRetryable(error) && count < 2`. Só falhas transitórias (`NetworkError`, `HttpError` 5xx) são repetidas. Repetir erro de contrato (4xx, `ParseError`) só atrasa a mensagem ao usuário.
 
@@ -208,13 +208,13 @@ useQuery({
 });
 ```
 
-| Mecanismo | Problema que resolve |
-| --------- | -------------------- |
-| **Debounce** (350 ms) | Não dispara requisição a cada tecla, só depois que a pessoa **para** de digitar. *Debounce*, não *throttle*: throttle executa periodicamente durante a digitação, e para busca só o termo final importa. |
-| `trim()` | `"santa "` e `"santa"` são a mesma key. Evita requisição duplicada. |
-| `enabled: length >= 2` | Termos curtos demais não disparam. |
-| **`signal` até o `fetch`** | Se a pessoa pausa (requisição sai) e volta a digitar, a requisição antiga é abortada, e uma resposta velha nunca sobrescreve a nova (race condition). Complementa o debounce, não o substitui. |
-| `keepPreviousData` | Mantém os resultados anteriores na tela durante a nova busca, sem a lista sumir/piscar. |
+| Mecanismo                  | Problema que resolve                                                                                                                                                                                     |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Debounce** (350 ms)      | Não dispara requisição a cada tecla, só depois que a pessoa **para** de digitar. _Debounce_, não _throttle_: throttle executa periodicamente durante a digitação, e para busca só o termo final importa. |
+| `trim()`                   | `"santa "` e `"santa"` são a mesma key. Evita requisição duplicada.                                                                                                                                      |
+| `enabled: length >= 2`     | Termos curtos demais não disparam.                                                                                                                                                                       |
+| **`signal` até o `fetch`** | Se a pessoa pausa (requisição sai) e volta a digitar, a requisição antiga é abortada, e uma resposta velha nunca sobrescreve a nova (race condition). Complementa o debounce, não o substitui.           |
+| `keepPreviousData`         | Mantém os resultados anteriores na tela durante a nova busca, sem a lista sumir/piscar.                                                                                                                  |
 
 `useDebouncedValue` é implementado no projeto (≈10 linhas com `setTimeout` + cleanup do `useEffect`), sem dependência externa.
 
@@ -228,23 +228,23 @@ useQuery({
 
 **Contexto:** a Geocoding API **omite** campos opcionais (ex.: `admin1`, `population`) e retorna **sem a chave `results`** quando não há resultados. Confiar apenas em tipos TS levaria a crashes em runtime.
 
-| Alternativa         | Prós | Contras |
-| ------------------- | ---- | ------- |
-| **Zod**             | Valida em runtime e infere os tipos TS (fonte única de verdade). Falhas viram erros tratáveis, não crashes. | ~12 kB. Pequeno custo de parsing (irrelevante para esse volume). |
-| Só tipos TS (`as`)  | Zero custo. | É uma mentira para o compilador: o app quebra se a API mudar ou omitir campos. |
-| Valibot             | Bundle menor. | Menos familiar para avaliadores e com ecossistema menor. |
+| Alternativa        | Prós                                                                                                        | Contras                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Zod**            | Valida em runtime e infere os tipos TS (fonte única de verdade). Falhas viram erros tratáveis, não crashes. | ~12 kB. Pequeno custo de parsing (irrelevante para esse volume).               |
+| Só tipos TS (`as`) | Zero custo.                                                                                                 | É uma mentira para o compilador: o app quebra se a API mudar ou omitir campos. |
+| Valibot            | Bundle menor.                                                                                               | Menos familiar para avaliadores e com ecossistema menor.                       |
 
 **Decisão:** Zod na fronteira de rede. O resto do app consome objetos de domínio já validados e normalizados.
 
 **Validar e normalizar:** o schema não só confere, ele **transforma** a forma da API na forma do domínio. A forma da API não vaza para o app.
 
-| API (Open-Meteo) | Domínio (app) |
-| ---------------- | ------------- |
-| Arrays paralelos: `hourly.time[i]`, `hourly.apparent_temperature[i]`… | Lista de objetos: `HourlyForecast[]` |
-| `snake_case` | `camelCase` |
-| `is_day: 0 \| 1` | `isDay: boolean` |
-| `time: "2026-10-17T14:00"` (local da cidade, sem offset) | `{ date, hour }` na hora local da cidade, nunca `Date` do aparelho (ver 9.1) |
-| Chave `results` ausente | `results: []` |
+| API (Open-Meteo)                                                      | Domínio (app)                                                                |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Arrays paralelos: `hourly.time[i]`, `hourly.apparent_temperature[i]`… | Lista de objetos: `HourlyForecast[]`                                         |
+| `snake_case`                                                          | `camelCase`                                                                  |
+| `is_day: 0 \| 1`                                                      | `isDay: boolean`                                                             |
+| `time: "2026-10-17T14:00"` (local da cidade, sem offset)              | `{ date, hour }` na hora local da cidade, nunca `Date` do aparelho (ver 9.1) |
+| Chave `results` ausente                                               | `results: []`                                                                |
 
 Consequências:
 
@@ -258,21 +258,21 @@ Consequências:
 
 **Status:** Aceita
 
-| Alternativa  | Prós | Contras |
-| ------------ | ---- | ------- |
-| **`fetch` + wrapper** | Sem dependência. Suporta `AbortSignal` (integra com o TanStack Query). O wrapper centraliza a base URL, o timeout e a conversão de erros HTTP em erros tipados. | Precisa escrever ~30 linhas. |
-| Axios        | Interceptors e defaults prontos. | Dependência sem ganho real aqui: são 2 endpoints GET, sem auth. |
+| Alternativa           | Prós                                                                                                                                                            | Contras                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **`fetch` + wrapper** | Sem dependência. Suporta `AbortSignal` (integra com o TanStack Query). O wrapper centraliza a base URL, o timeout e a conversão de erros HTTP em erros tipados. | Precisa escrever ~30 linhas.                                    |
+| Axios                 | Interceptors e defaults prontos.                                                                                                                                | Dependência sem ganho real aqui: são 2 endpoints GET, sem auth. |
 
 **Decisão:** `fetch` com um `httpGet(url, schema, signal)` que já valida com Zod.
 
 **Erros tipados:** cada tipo pede uma reação diferente, por isso não existe um "erro genérico".
 
-| Erro | Origem | Mensagem ao usuário | Retry? |
-| ---- | ------ | ------------------- | ------ |
-| `NetworkError` | `fetch` rejeitou (sem internet, DNS, abort por timeout) | "Sem conexão. Verifique sua internet." | Sim |
-| `HttpError` 5xx | Servidor instável | "O serviço de clima está instável. Tente novamente." | Sim |
-| `HttpError` 4xx | Requisição inválida | "Não foi possível carregar." | Não |
-| `ParseError` | Resposta fora do contrato (Zod) | "Não foi possível carregar." | Não |
+| Erro            | Origem                                                  | Mensagem ao usuário                                  | Retry? |
+| --------------- | ------------------------------------------------------- | ---------------------------------------------------- | ------ |
+| `NetworkError`  | `fetch` rejeitou (sem internet, DNS, abort por timeout) | "Sem conexão. Verifique sua internet."               | Sim    |
+| `HttpError` 5xx | Servidor instável                                       | "O serviço de clima está instável. Tente novamente." | Sim    |
+| `HttpError` 4xx | Requisição inválida                                     | "Não foi possível carregar."                         | Não    |
+| `ParseError`    | Resposta fora do contrato (Zod)                         | "Não foi possível carregar."                         | Não    |
 
 Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibidos como erro.
 
@@ -284,13 +284,13 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 
 **Contexto:** o critério de avaliação pede uma interface simples e elegante. A consistência visual vem dos **tokens semânticos**, não da biblioteca. Em RN não há cascata nem seletores, então a consistência precisa vir de valores compartilhados.
 
-| Alternativa              | Prós | Contras |
-| ------------------------ | ---- | ------- |
+| Alternativa                     | Prós                                                                                                                                    | Contras                                                                                                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **NativeWind v4 (Tailwind v3)** | Produtividade e **domínio prévio da ferramenta** (relevante com prazo de 5 dias). Tema centralizado via variáveis CSS. Roda no Expo Go. | Setup em Babel/Metro/Tailwind. Risco de compatibilidade com o SDK do Expo. Strings de classe longas, se não houver disciplina. |
-| `StyleSheet` + tokens próprios | Zero dependências, API nativa, todo dev RN lê. | Mais verboso. O tema dinâmico exige um padrão próprio (`useStyles` + `useMemo`). |
-| Unistyles | Troca de tema sem re-render, ótima performance. | Exige dev build, não roda no Expo Go (conflita com 001). |
-| Tamagui / Gluestack (UI kits) | Componentes prontos. | Setup pesado, visual genérico, esconde as decisões de UI avaliadas. |
-| styled-components / Emotion | Familiar para quem vem da web. | Custo de runtime, pouco usado em RN moderno. |
+| `StyleSheet` + tokens próprios  | Zero dependências, API nativa, todo dev RN lê.                                                                                          | Mais verboso. O tema dinâmico exige um padrão próprio (`useStyles` + `useMemo`).                                               |
+| Unistyles                       | Troca de tema sem re-render, ótima performance.                                                                                         | Exige dev build, não roda no Expo Go (conflita com 001).                                                                       |
+| Tamagui / Gluestack (UI kits)   | Componentes prontos.                                                                                                                    | Setup pesado, visual genérico, esconde as decisões de UI avaliadas.                                                            |
+| styled-components / Emotion     | Familiar para quem vem da web.                                                                                                          | Custo de runtime, pouco usado em RN moderno.                                                                                   |
 
 **Decisão:** NativeWind **4.x estável** (4.2.7 na data da decisão). A 5.0 (Tailwind v4) está em RC, e um release candidate com prazo curto é risco sem ganho.
 
@@ -319,11 +319,11 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 
 ### Riscos e mitigações
 
-| Risco | Mitigação |
-| ----- | --------- |
+| Risco                                                                                | Mitigação                                                                                                                                                                                          |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Incompatibilidade entre o NativeWind 4.x e o SDK do Expo (dependência do Reanimated) | **Spike de até ~1 h** na criação do projeto: uma tela com `className` + troca claro/escuro funcionando no Expo Go. Se falhar, volta para `StyleSheet` + tokens, com os mesmos tokens e princípios. |
-| Avaliador sem familiaridade com Tailwind | Nomes semânticos legíveis por si (`bg-surface`). O README explica o tema. |
-| Strings de classe longas | Componentes base + `tailwind-variants`. |
+| Avaliador sem familiaridade com Tailwind                                             | Nomes semânticos legíveis por si (`bg-surface`). O README explica o tema.                                                                                                                          |
+| Strings de classe longas                                                             | Componentes base + `tailwind-variants`.                                                                                                                                                            |
 
 ---
 
@@ -333,11 +333,11 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 
 **Contexto:** app de 2 telas, avaliado por desenvolvedores React Native. A estrutura precisa ser reconhecível de imediato e deixar evidente onde está a regra de negócio.
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| **Por tipo + algoritmo isolado** | Convenção do template `create-expo-app` e a mais comum na comunidade RN: o avaliador se orienta na hora. O algoritmo fica separado e testável. | Em apps grandes, uma funcionalidade se espalha por várias pastas (não é o caso aqui). |
-| Por feature (*Bulletproof React*, *Feature-Sliced Design*) | Escala bem em codebases grandes, com muitos times. | Estrutura para um problema inexistente em 2 telas. Menos familiar no ecossistema Expo. |
-| Clean Architecture (use cases, repositories, adapters) | Separação máxima. | Herança de backend/nativo. Cerimônia que não se paga com 2 endpoints: over-engineering. |
+| Alternativa                                                | Prós                                                                                                                                           | Contras                                                                                 |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Por tipo + algoritmo isolado**                           | Convenção do template `create-expo-app` e a mais comum na comunidade RN: o avaliador se orienta na hora. O algoritmo fica separado e testável. | Em apps grandes, uma funcionalidade se espalha por várias pastas (não é o caso aqui).   |
+| Por feature (_Bulletproof React_, _Feature-Sliced Design_) | Escala bem em codebases grandes, com muitos times.                                                                                             | Estrutura para um problema inexistente em 2 telas. Menos familiar no ecossistema Expo.  |
+| Clean Architecture (use cases, repositories, adapters)     | Separação máxima.                                                                                                                              | Herança de backend/nativo. Cerimônia que não se paga com 2 endpoints: over-engineering. |
 
 **Decisão:**
 
@@ -379,11 +379,11 @@ tailwind.config.js
 
 **Contexto:** é o critério "transformar dados brutos em uma experiência útil". A lógica precisa ser explicável em uma frase para o usuário e em um parágrafo no README.
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| **Score 0–100 por hora (faixas graduais) + janela expandida** | Gradual (25°C > 28°C > 30°C). Fácil de calibrar e testar. Gera os motivos ("vento leve") a partir dos fatores. | Parâmetros arbitrários (mitigado: constantes nomeadas e documentadas em `config.ts`). |
-| Regras booleanas ("temp entre X e Y E chuva < Z") | Simplíssimo. | 17,9°C e 18°C viram opostos, 28°C e 33°C viram iguais. Muitas vezes retorna "nenhum" ou "todos". Não ordena opções. |
-| `weather_code` como critério principal | Semântico. | Grosseiro demais para diferenciar horas parecidas. |
+| Alternativa                                                   | Prós                                                                                                           | Contras                                                                                                             |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Score 0–100 por hora (faixas graduais) + janela expandida** | Gradual (25°C > 28°C > 30°C). Fácil de calibrar e testar. Gera os motivos ("vento leve") a partir dos fatores. | Parâmetros arbitrários (mitigado: constantes nomeadas e documentadas em `config.ts`).                               |
+| Regras booleanas ("temp entre X e Y E chuva < Z")             | Simplíssimo.                                                                                                   | 17,9°C e 18°C viram opostos, 28°C e 33°C viram iguais. Muitas vezes retorna "nenhum" ou "todos". Não ordena opções. |
+| `weather_code` como critério principal                        | Semântico.                                                                                                     | Grosseiro demais para diferenciar horas parecidas.                                                                  |
 
 ### 9.1 Fuso horário da cidade
 
@@ -396,9 +396,9 @@ A Forecast API (`timezone=auto`) devolve horários **locais da cidade sem offset
 
 A recomendação é dividida em **dois períodos**, porque são usos diferentes (correr de manhã ≠ sair para um bar).
 
-| Período | Horas candidatas | Fatores |
-| ------- | ---------------- | ------- |
-| **Dia** | Da hora atual até o pôr do sol | Temperatura, vento, UV, chuva |
+| Período   | Horas candidatas                          | Fatores                            |
+| --------- | ----------------------------------------- | ---------------------------------- |
+| **Dia**   | Da hora atual até o pôr do sol            | Temperatura, vento, UV, chuva      |
 | **Noite** | Do pôr do sol até **02h** do dia seguinte | Temperatura, vento, chuva (sem UV) |
 
 - Horas que já passaram nunca entram. A hora atual entra (às 14h10, "14h" ainda é útil).
@@ -408,12 +408,12 @@ A recomendação é dividida em **dois períodos**, porque são usos diferentes 
 
 Cada fator vira uma nota de 0 a 1: é 1 na faixa ideal e cai **linearmente** até 0 nos limites.
 
-| Fator | Variável | Ideal (nota 1) | Nota 0 em |
-| ----- | -------- | -------------- | --------- |
-| Temperatura | `apparent_temperature` (sensação térmica) | **18–26 °C** | ≤ 8 °C ou ≥ 34 °C |
-| Chuva | `precipitation_probability` | 0–10% | ≥ 70% |
-| Vento | `wind_speed_10m` | 0–15 km/h | ≥ 40 km/h |
-| UV | `uv_index` | 0–5 | ≥ 11 |
+| Fator       | Variável                                  | Ideal (nota 1) | Nota 0 em         |
+| ----------- | ----------------------------------------- | -------------- | ----------------- |
+| Temperatura | `apparent_temperature` (sensação térmica) | **18–26 °C**   | ≤ 8 °C ou ≥ 34 °C |
+| Chuva       | `precipitation_probability`               | 0–10%          | ≥ 70%             |
+| Vento       | `wind_speed_10m`                          | 0–15 km/h      | ≥ 40 km/h         |
+| UV          | `uv_index`                                | 0–5            | ≥ 11              |
 
 Exemplo (temperatura): 22°C → 1.0 · 28°C → 0.75 · 30°C → 0.5 · 34°C → 0.
 
@@ -431,11 +431,11 @@ veto     : weather_code 95–99 (tempestade) → score = 0
 
 **Motivo:** uma média ponderada simples deixa um fator ruim ser compensado pelos bons. Temperatura perfeita, sem vento e com 90% de chuva daria 65 ("Bom"), recomendando sair na chuva. Os fatores de **conforto** se compensam entre si (um pouco de vento num dia perfeito é tolerável). A **chuva** é eliminatória e **multiplica**. Tempestade é questão de segurança: veto explícito.
 
-| Alternativa | Por que não |
-| ----------- | ----------- |
-| Média ponderada simples | Recomendaria sair na chuva (exemplo acima). |
-| Mínimo dos fatores | Rígido demais: um UV 6 limitaria o dia inteiro. |
-| Só vetos + média | Cortes bruscos e regras espalhadas. |
+| Alternativa             | Por que não                                     |
+| ----------------------- | ----------------------------------------------- |
+| Média ponderada simples | Recomendaria sair na chuva (exemplo acima).     |
+| Mínimo dos fatores      | Rígido demais: um UV 6 limitaria o dia inteiro. |
+| Só vetos + média        | Cortes bruscos e regras espalhadas.             |
 
 ### 9.5 Janela
 
@@ -447,11 +447,11 @@ Resultado: "entre 16h e 20h" quando o fim de tarde todo está bom, e "às 17h" q
 
 **Janela que cruza o pôr do sol:**
 
-| Opção | Por que não / por que sim |
-| ----- | ------------------------- |
-| Corte rígido no pôr do sol | Parte em dois um fim de tarde contínuo e agradável. |
-| Unir dia e noite numa janela só | Passa das 4h e a mensagem fica vaga. |
-| **Cruzar sem repetir horas** ✅ | Natural e sem informação duplicada. |
+| Opção                           | Por que não / por que sim                           |
+| ------------------------------- | --------------------------------------------------- |
+| Corte rígido no pôr do sol      | Parte em dois um fim de tarde contínuo e agradável. |
+| Unir dia e noite numa janela só | Passa das 4h e a mensagem fica vaga.                |
+| **Cruzar sem repetir horas** ✅ | Natural e sem informação duplicada.                 |
 
 Regras:
 
@@ -464,18 +464,18 @@ Regras:
 
 | Score da janela | Rótulo |
 | --------------- | ------ |
-| ≥ 75 | Ótimo |
-| 50–74 | Bom |
-| < 50 | Evite |
+| ≥ 75            | Ótimo  |
+| 50–74           | Bom    |
+| < 50            | Evite  |
 
 **Motivos** derivados dos fatores da janela:
 
-| Fator | Faixas → frase |
-| ----- | -------------- |
-| Temperatura | `< 12` frio · `12–18` fresco · `18–26` agradável · `26–30` quente · `> 30` muito quente |
-| Chuva | `< 20%` baixa chance de chuva · `20–50%` possibilidade de chuva · `> 50%` chuva provável |
-| Vento | `< 15` vento leve · `15–30` ventando · `> 30` vento forte |
-| UV | `≥ 8` → **alerta**: "UV muito alto, use protetor solar" |
+| Fator       | Faixas → frase                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| Temperatura | `< 12` frio · `12–18` fresco · `18–26` agradável · `26–30` quente · `> 30` muito quente  |
+| Chuva       | `< 20%` baixa chance de chuva · `20–50%` possibilidade de chuva · `> 50%` chuva provável |
+| Vento       | `< 15` vento leve · `15–30` ventando · `> 30` vento forte                                |
+| UV          | `≥ 8` → **alerta**: "UV muito alto, use protetor solar"                                  |
 
 Fatores favoráveis compõem a frase principal ("Temperatura agradável, baixa chance de chuva e vento leve"). Desfavoráveis viram avisos. O algoritmo devolve **níveis** (`temperature: "pleasant"`), não frases. A tradução é feita na UI (ver 013).
 
@@ -483,12 +483,12 @@ Fatores favoráveis compõem a frase principal ("Temperatura agradável, baixa c
 
 Cada card traz **2–3 sugestões** (como chaves de tradução, ver 013) escolhidas por uma **tabela fixa** (período × condição dominante da janela), em `src/recommendation/suggestions.ts`. São **dados, não lógica**: adicionar uma sugestão é adicionar uma linha. A escolha é **determinística**, para manter os testes previsíveis.
 
-| Condição | Dia | Noite |
-| -------- | --- | ----- |
-| Agradável | caminhada no parque, corrida, piquenique | barzinho com mesa na calçada, jantar ao ar livre |
-| Quente | praia ou piscina, sorvete, passeio na sombra | barzinho, açaí, caminhada na orla |
-| Frio | caminhada ao sol, café com vista | restaurante de sopa, fondue, chocolate quente em casa |
-| Chuva | cinema, museu, café | filme em casa, restaurante aconchegante |
+| Condição  | Dia                                          | Noite                                                 |
+| --------- | -------------------------------------------- | ----------------------------------------------------- |
+| Agradável | caminhada no parque, corrida, piquenique     | barzinho com mesa na calçada, jantar ao ar livre      |
+| Quente    | praia ou piscina, sorvete, passeio na sombra | barzinho, açaí, caminhada na orla                     |
+| Frio      | caminhada ao sol, café com vista             | restaurante de sopa, fondue, chocolate quente em casa |
+| Chuva     | cinema, museu, café                          | filme em casa, restaurante aconchegante               |
 
 **Motivo:** transforma o estado negativo ("Evite") em algo útil, e o pior cenário do app vira uma recomendação. Sugestões de "ficar em casa" só aparecem quando sair não é uma boa ideia, mantendo o foco do enunciado (atividade ao ar livre).
 
@@ -496,12 +496,12 @@ Cada card traz **2–3 sugestões** (como chaves de tradução, ver 013) escolhi
 
 Padrão de **divulgação progressiva**: primeiro a resposta curta, depois o detalhe.
 
-| Parte | Papel |
-| ----- | ----- |
-| **Título** | Responde "qual o melhor momento de hoje?" numa frase. É o formato do exemplo do enunciado. |
-| **Card "Durante o dia"** | Janela, rótulo, motivos e sugestões do dia. |
-| **Card "À noite"** | Janela, rótulo, motivos e sugestões da noite. |
-| **Selo "⭐ Melhor do dia"** | Marca o card vencedor em vez de repetir seu conteúdo. |
+| Parte                       | Papel                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| **Título**                  | Responde "qual o melhor momento de hoje?" numa frase. É o formato do exemplo do enunciado. |
+| **Card "Durante o dia"**    | Janela, rótulo, motivos e sugestões do dia.                                                |
+| **Card "À noite"**          | Janela, rótulo, motivos e sugestões da noite.                                              |
+| **Selo "⭐ Melhor do dia"** | Marca o card vencedor em vez de repetir seu conteúdo.                                      |
 
 Casos especiais:
 
@@ -531,11 +531,11 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 
 **Status:** Aceita
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| **Horas futuras de hoje (dia + noite até 02h) → amanhã quando o período acabou** | Responde à pergunta do enunciado, nunca recomenda horário passado e continua útil à noite. | Exige tratar o fuso da cidade (9.1). |
-| Dia inteiro de hoje | Mais simples. | Pode recomendar "entre 9h e 11h" às 15h: inútil. |
-| Próximos 7 dias | Mais informação. | Dilui a resposta e foge do "melhor horário do dia". |
+| Alternativa                                                                      | Prós                                                                                       | Contras                                             |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| **Horas futuras de hoje (dia + noite até 02h) → amanhã quando o período acabou** | Responde à pergunta do enunciado, nunca recomenda horário passado e continua útil à noite. | Exige tratar o fuso da cidade (9.1).                |
+| Dia inteiro de hoje                                                              | Mais simples.                                                                              | Pode recomendar "entre 9h e 11h" às 15h: inútil.    |
+| Próximos 7 dias                                                                  | Mais informação.                                                                           | Dilui a resposta e foge do "melhor horário do dia". |
 
 **Decisão:**
 
@@ -567,10 +567,10 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 
 **Status:** Aceita
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| **AsyncStorage** | Funciona no Expo Go sem dev client. API simples. Suficiente para 5 cidades recentes. | Assíncrono e mais lento (irrelevante nesse volume). |
-| MMKV | Muito mais rápido e síncrono. | Exige dev client ou prebuild: quebra o "rode com Expo Go" (decisão 001). |
+| Alternativa      | Prós                                                                                 | Contras                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **AsyncStorage** | Funciona no Expo Go sem dev client. API simples. Suficiente para 5 cidades recentes. | Assíncrono e mais lento (irrelevante nesse volume).                      |
+| MMKV             | Muito mais rápido e síncrono.                                                        | Exige dev client ou prebuild: quebra o "rode com Expo Go" (decisão 001). |
 
 **Decisão:** AsyncStorage, encapsulado em um hook `useRecentCities`. Trocar por MMKV no futuro afeta um único arquivo.
 
@@ -590,11 +590,11 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 
 **Regra:** o app segue o idioma do aparelho. Idiomas suportados: **português, inglês e espanhol**. Qualquer outro → **inglês** (o mais amplamente compreendido). Considera-se apenas o idioma, não a região: `pt-BR`/`pt-PT` → português, `es-MX`/`es-AR` → espanhol.
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| **`expo-localization` + `i18next` / `react-i18next`** | Padrão de mercado. Interpolação, plural e fallback prontos. | Um pouco mais pesado. |
-| `expo-localization` + `i18n-js` | Mais leve, exemplo da documentação do Expo. | Menos recursos e menos adotado. |
-| Implementação própria (objeto + `t`) | Zero dependências. | Reimplementa plural, interpolação e fallback. |
+| Alternativa                                           | Prós                                                        | Contras                                       |
+| ----------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------- |
+| **`expo-localization` + `i18next` / `react-i18next`** | Padrão de mercado. Interpolação, plural e fallback prontos. | Um pouco mais pesado.                         |
+| `expo-localization` + `i18n-js`                       | Mais leve, exemplo da documentação do Expo.                 | Menos recursos e menos adotado.               |
+| Implementação própria (objeto + `t`)                  | Zero dependências.                                          | Reimplementa plural, interpolação e fallback. |
 
 **Decisão:** `i18next` + `react-i18next`, com `expo-localization` para ler o idioma do aparelho. Traduções em `src/i18n/locales/{pt,en,es}.json`.
 
@@ -607,10 +607,10 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 
 ### Unidades
 
-| Alternativa | Prós | Contras |
-| ----------- | ---- | ------- |
-| Sempre °C e km/h | Mais simples. | Usuários de °F/mph (ex.: EUA) veem unidades estranhas. |
-| **Seguir a configuração do aparelho** | Coerente com "respeitar o aparelho da pessoa". Custo baixo. | Uma camada de formatação a mais. |
+| Alternativa                           | Prós                                                        | Contras                                                |
+| ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| Sempre °C e km/h                      | Mais simples.                                               | Usuários de °F/mph (ex.: EUA) veem unidades estranhas. |
+| **Seguir a configuração do aparelho** | Coerente com "respeitar o aparelho da pessoa". Custo baixo. | Uma camada de formatação a mais.                       |
 
 **Decisão:** seguir o aparelho, via `expo-localization`: temperatura em °C ou °F conforme a preferência de temperatura do aparelho, e vento em km/h ou mph conforme o sistema de medidas.
 
@@ -633,13 +633,13 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 
 **Princípio:** o esforço vai onde está o risco, não atrás de uma porcentagem de cobertura.
 
-| Camada | Casos | Por quê |
-| ------ | ----- | ------- |
+| Camada                           | Casos                                                                                                                                                                                                                                                                                                    | Por quê                                                                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | **`src/recommendation/`** (foco) | Trapézio nas bordas (18°C, 26°C, 34°C). Chuva eliminatória (temperatura perfeita + 90% de chuva → "Evite"). Veto de tempestade. Janela crescendo até 4h e parando. Janela cruzando o pôr do sol sem repetir horas na noite. Dia encerrado → amanhã. Madrugada (00h–02h). Tudo ruim → título e sugestões. | É a regra de negócio. Funções puras, sem mock, com o "agora" passado como parâmetro (9.9). |
-| **`schemas/`** | Fixtures de **respostas reais** (Santa Maria, busca vazia sem `results`). Arrays horários de tamanhos diferentes → `ParseError`. Storage corrompido descartado. | Robustez da fronteira com o mundo externo. |
-| **Formatação** | Lisboa vista de São Paulo, °F/mph, "17h" vs "5 PM". | Os bugs sutis de fuso e locale moram aqui. |
-| **i18n** | `pt`, `en` e `es` têm exatamente as mesmas chaves. | Barato e evita tradução esquecida. |
-| **Fluxo** (1–2 testes) | Buscar → selecionar → ver recomendação, com `fetch` mockado. | Confiança de que as peças se encaixam, sem o custo de E2E. |
+| **`schemas/`**                   | Fixtures de **respostas reais** (Santa Maria, busca vazia sem `results`). Arrays horários de tamanhos diferentes → `ParseError`. Storage corrompido descartado.                                                                                                                                          | Robustez da fronteira com o mundo externo.                                                 |
+| **Formatação**                   | Lisboa vista de São Paulo, °F/mph, "17h" vs "5 PM".                                                                                                                                                                                                                                                      | Os bugs sutis de fuso e locale moram aqui.                                                 |
+| **i18n**                         | `pt`, `en` e `es` têm exatamente as mesmas chaves.                                                                                                                                                                                                                                                       | Barato e evita tradução esquecida.                                                         |
+| **Fluxo** (1–2 testes)           | Buscar → selecionar → ver recomendação, com `fetch` mockado.                                                                                                                                                                                                                                             | Confiança de que as peças se encaixam, sem o custo de E2E.                                 |
 
 **Fora do escopo:** E2E (Detox/Maestro), pelo custo de configuração. Citado no README como próximo passo.
 
@@ -652,19 +652,19 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 - **ESLint** (`eslint-config-expo`) + **Prettier** com `prettier-plugin-tailwindcss`, que ordena as classes automaticamente e dá consistência às `className` (007).
 - **`npm run check`** = `tsc --noEmit` + lint + testes. O Metro não checa tipos (002).
 - **GitHub Actions** rodando `check` em todo push.
-- **Commits pequenos e descritivos** no padrão *Conventional Commits* (`feat:`, `fix:`, `test:`, `docs:`). O histórico conta como o projeto foi construído, e avaliadores costumam olhar o `git log`.
+- **Commits pequenos e descritivos** no padrão _Conventional Commits_ (`feat:`, `fix:`, `test:`, `docs:`). O histórico conta como o projeto foi construído, e avaliadores costumam olhar o `git log`.
 - **Sem Husky/pre-commit:** o CI já cobre isso, e hooks locais adicionam configuração sem ganho num projeto solo.
 
 ---
 
 ## Questões em aberto
 
-| Tema | Situação |
-| ---- | -------- |
-| Dark mode | ✅ Incorporado: tema por variáveis CSS (007). |
-| Linha do tempo horária | ✅ Incorporada à tela de recomendação. O formato visual será definido junto com o layout (9.8). |
-| Paleta de cores | ⏳ Definir na construção da UI, validando contraste WCAG AA (007). |
-| Layout das telas | ⏳ Combinar a estrutura da 9.8 com o esboço do autor. |
-| Seleção de atividade (correr / caminhar / pedalar) | 💤 Extensão, só se o cronograma permitir. Mudaria apenas os pesos em `config.ts`. |
-| "Usar minha localização" | 💤 Extensão, só se o cronograma permitir. `expo-location`, com tratamento de permissão negada. |
-| APK via EAS Build | ⏳ Gerar ao final e linkar no README (001). |
+| Tema                                               | Situação                                                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Dark mode                                          | ✅ Incorporado: tema por variáveis CSS (007).                                                   |
+| Linha do tempo horária                             | ✅ Incorporada à tela de recomendação. O formato visual será definido junto com o layout (9.8). |
+| Paleta de cores                                    | ⏳ Definir na construção da UI, validando contraste WCAG AA (007).                              |
+| Layout das telas                                   | ⏳ Combinar a estrutura da 9.8 com o esboço do autor.                                           |
+| Seleção de atividade (correr / caminhar / pedalar) | 💤 Extensão, só se o cronograma permitir. Mudaria apenas os pesos em `config.ts`.               |
+| "Usar minha localização"                           | 💤 Extensão, só se o cronograma permitir. `expo-location`, com tratamento de permissão negada.  |
+| APK via EAS Build                                  | ⏳ Gerar ao final e linkar no README (001).                                                     |

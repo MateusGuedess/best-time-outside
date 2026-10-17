@@ -1,0 +1,4 @@
+dist/
+.expo/
+package-lock.json
+expo-env.d.ts
