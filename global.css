@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * PLACEHOLDER: paleta ainda não definida (ver decisão 007, "Pendência: paleta de cores").
+ * Valores neutros apenas para validar a estrutura de tema claro/escuro.
+ */
+:root {
+  --color-background: 245 245 245;
+  --color-surface: 255 255 255;
+  --color-text: 23 23 23;
+  --color-muted: 115 115 115;
+  --color-accent: 64 64 64;
+  --color-score-good: 64 64 64;
+  --color-score-ok: 128 128 128;
+  --color-score-bad: 176 176 176;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: 10 10 10;
+    --color-surface: 28 28 28;
+    --color-text: 245 245 245;
+    --color-muted: 163 163 163;
+    --color-accent: 212 212 212;
+    --color-score-good: 212 212 212;
+    --color-score-ok: 140 140 140;
+    --color-score-bad: 90 90 90;
+  }
+}

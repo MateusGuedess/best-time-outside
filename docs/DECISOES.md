@@ -102,13 +102,13 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 **Decisão:** Expo Router.
 
 ```
-app/
+src/app/
   _layout.tsx      → Stack + providers (QueryClient, tema)
   index.tsx        → busca
   city/[id].tsx    → recomendação
 ```
 
-Arquivos em `app/` são as telas e compõem componentes de `src/components` (ver 008).
+Arquivos em `src/app/` são as telas e compõem componentes de `src/components` (ver 008).
 
 ### Subdecisão: o que trafega como parâmetro de rota
 
@@ -342,11 +342,11 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 **Decisão:**
 
 ```
-app/                          # rotas = telas (Expo Router)
-  _layout.tsx                 #   Stack + providers
-  index.tsx                   #   busca
-  city/[id].tsx               #   recomendação
 src/
+  app/                        # rotas = telas (Expo Router; convenção src/app do SDK 58)
+    _layout.tsx               #   Stack + providers
+    index.tsx                 #   busca
+    city/[id].tsx             #   recomendação
   components/
     ui/                       # genéricos, sem domínio: Text, Card, Badge, Input, Screen, EmptyState, ErrorState
     CityListItem.tsx          # de domínio: conhecem City / Recommendation
@@ -365,7 +365,7 @@ tailwind.config.js
 
 ### Regras
 
-1. **Telas moram em `app/`.** Com Expo Router, o arquivo de rota é a tela. Uma pasta `screens/` seria duplicação.
+1. **Telas moram em `src/app/`** (convenção do template do SDK 58). Com Expo Router, o arquivo de rota é a tela. Uma pasta `screens/` seria duplicação.
 2. **Componentes separados por reuso, não por assunto.** Critério: "o componente conhece o domínio (cidade, clima)?" Não → `ui/`. Sim → `components/`. Com poucos componentes de domínio, sem subpastas.
 3. **Sem wrapper sem ganho.** Não existe `SearchInput` (é o `Input` com ícone via prop) nem `CityList` (é um `FlatList` direto).
 4. **O formato da API não sai de `schemas/`.** Cada schema tem tipo de entrada (`z.input`, formato Open-Meteo) e de saída (`z.output`, formato do app). Componentes, hooks e algoritmo importam só de `types/`. Trocar de API afeta apenas `schemas/` e `services/`.
