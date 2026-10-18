@@ -4,8 +4,6 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
-      // Tokens semânticos (decisão 007): o nome descreve o papel, não a cor.
-      // Os valores vêm das variáveis CSS em global.css.
       colors: {
         background: "rgb(var(--color-background) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",

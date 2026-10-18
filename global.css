@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * PLACEHOLDER: paleta ainda não definida (ver decisão 007, "Pendência: paleta de cores").
- * Valores neutros apenas para validar a estrutura de tema claro/escuro.
- */
 :root {
   --color-background: 245 245 245;
   --color-surface: 255 255 255;

@@ -1,4 +1,3 @@
-// Spike temporário (decisão 007): valida NativeWind + tema claro/escuro no SDK atual.
 import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
 

@@ -23,7 +23,6 @@ describe("useDebouncedValue", () => {
     await rerender({ value: "santa" });
     await act(() => jest.advanceTimersByTime(200));
 
-    // 400 ms se passaram no total, mas só 200 ms desde a última mudança
     expect(result.current).toBe("sa");
 
     await act(() => jest.advanceTimersByTime(150));
