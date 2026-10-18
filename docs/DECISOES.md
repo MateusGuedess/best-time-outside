@@ -54,6 +54,8 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 | O Expo Go da loja só suporta o SDK mais recente. O avaliador pode ter uma versão incompatível. | Versão do SDK travada e explícita no README. Alternativa documentada: `npx expo run:android` / `run:ios`. |
 | O avaliador pode não querer configurar nada.                                                   | (Opcional) APK gerado via EAS Build com link no README.                                                   |
 
+**Versão do SDK: 57, não 58 (revisado em 2026-10-17).** O projeto foi criado no SDK 58 (estável desde 15/10), mas o Expo Go das lojas ainda roda só o SDK 57: o aparelho mostra _"Project is incompatible with this version of Expo Go"_. A versão de loja do SDK 58 chega "em algumas semanas", sem data garantida antes da entrega. No iPhone, rodar o SDK 58 exigiria gerar um Expo Go próprio (`eas go`) com conta Apple Developer paga. Voltar para o 57 custou pouco (só havia o scaffold) e garante que o avaliador abra o app com o Expo Go que já tem instalado. Critério: **o SDK que o avaliador consegue rodar, não o mais novo.**
+
 ---
 
 ## 002 — Linguagem: TypeScript em modo strict
@@ -343,7 +345,7 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 
 ```
 src/
-  app/                        # rotas = telas (Expo Router; convenção src/app do SDK 58)
+  app/                        # rotas = telas (Expo Router; convenção src/app do template atual)
     _layout.tsx               #   Stack + providers
     index.tsx                 #   busca
     city/[id].tsx             #   recomendação
@@ -365,7 +367,7 @@ tailwind.config.js
 
 ### Regras
 
-1. **Telas moram em `src/app/`** (convenção do template do SDK 58). Com Expo Router, o arquivo de rota é a tela. Uma pasta `screens/` seria duplicação.
+1. **Telas moram em `src/app/`** (convenção do template atual do Expo). Com Expo Router, o arquivo de rota é a tela. Uma pasta `screens/` seria duplicação.
 2. **Componentes separados por reuso, não por assunto.** Critério: "o componente conhece o domínio (cidade, clima)?" Não → `ui/`. Sim → `components/`. Com poucos componentes de domínio, sem subpastas.
 3. **Sem wrapper sem ganho.** Não existe `SearchInput` (é o `Input` com ícone via prop) nem `CityList` (é um `FlatList` direto).
 4. **O formato da API não sai de `schemas/`.** Cada schema tem tipo de entrada (`z.input`, formato Open-Meteo) e de saída (`z.output`, formato do app). Componentes, hooks e algoritmo importam só de `types/`. Trocar de API afeta apenas `schemas/` e `services/`.
