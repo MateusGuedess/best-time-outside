@@ -14,7 +14,7 @@ Cada decisão traz contexto, alternativas avaliadas, prós e contras, e o motivo
 | 001 | Plataforma base                      | Expo (managed workflow)                                  | Aceita |
 | 002 | Linguagem                            | TypeScript (strict)                                      | Aceita |
 | 003 | Navegação                            | Expo Router                                              | Aceita |
-| 004 | Estado de servidor / data fetching   | TanStack Query                                           | Aceita |
+| 004 | Estado de servidor e de cliente      | TanStack Query, sem lib de estado global                 | Aceita |
 | 005 | Validação das respostas da API       | Zod                                                      | Aceita |
 | 006 | Cliente HTTP                         | `fetch` nativo + wrapper fino                            | Aceita |
 | 007 | Estilização                          | NativeWind v4 + tema semântico                           | Aceita |
@@ -171,7 +171,25 @@ A comparação é posicional nos itens do array, mas **ignora a ordem das propri
 | Redux Toolkit / RTK Query | Robusto.                                                                                                                                                                                                 | Excessivo para um app sem estado global de cliente.                                                          |
 | SWR                       | Leve e simples.                                                                                                                                                                                          | Menos controle sobre mutations e cancelamento. Menor adoção em RN.                                           |
 
-**Decisão:** TanStack Query. Não haverá biblioteca de estado global: o pouco estado de cliente (buscas recentes, preferência de atividade) fica em hooks e contexto.
+**Decisão:** TanStack Query. Não haverá biblioteca de estado global: o pouco estado de cliente (buscas recentes, preferência de atividade) fica em hooks (ver "Estado de cliente" abaixo).
+
+### Estado de cliente
+
+O estado é separado pela **origem**, e cada tipo fica onde já tem dono:
+
+| Tipo                 | Exemplos no app                           | Onde fica                                   |
+| -------------------- | ----------------------------------------- | ------------------------------------------- |
+| Estado de servidor   | Busca de cidades, cidade por id, previsão | TanStack Query (cache, retry, cancelamento) |
+| Estado local de tela | Texto do campo de busca                   | `useState` na própria tela                  |
+| Estado da URL        | Cidade selecionada                        | Parâmetro de rota (`/city/[id]`, ver 003)   |
+| Estado persistido    | Buscas recentes                           | Hook `useRecentCities` + AsyncStorage (012) |
+
+Quase tudo que um Redux/Zustand guardaria aqui é estado de servidor, que já é do TanStack Query. Uma lib de estado global seria ferramenta sem problema para resolver.
+
+**Buscas recentes: `useState` dentro do hook, por enquanto.** Cada chamada de um hook com `useState` tem sua própria cópia do estado. Isso só é problema se duas telas lerem/gravarem a lista ao mesmo tempo. Hoje, só a tela de busca usa a lista, e ela continua montada na pilha enquanto a cidade está aberta: ao voltar, a lista já está atualizada.
+
+- **Gatilho para mudar:** uma segunda tela usando a lista (ex.: um perfil com "limpar histórico"). Aí o hook passa a usar `useQuery(["recentCities"])` para ler o storage e `useMutation` + invalidação para gravar, sincronizando as telas sem provider extra e no mesmo padrão do resto do app.
+- **Custo da mudança:** um arquivo. A interface do hook (`{ cities, add, … }`) não muda, e as telas não sabem onde a lista é guardada.
 
 ### Arquitetura da camada de dados (004 + 005 + 006)
 
