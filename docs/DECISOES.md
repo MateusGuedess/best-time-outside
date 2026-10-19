@@ -209,11 +209,17 @@ Cada camada só conhece a de baixo: a tela não sabe que existe `fetch`, e o `ht
 
 ### Configuração por tipo de dado
 
-| Query                                | `staleTime` | Motivo                                                              |
-| ------------------------------------ | ----------- | ------------------------------------------------------------------- |
-| Busca de cidades (`cityKeys.search`) | 24 h        | Cidades não mudam.                                                  |
-| Cidade por id (`cityKeys.detail`)    | 24 h        | Idem.                                                               |
-| Previsão (`forecastKeys.byCoords`)   | 15 min      | Muda, mas não a cada segundo. Voltar à tela não refaz a requisição. |
+| Query                                | `staleTime` | `gcTime` | Motivo                                                                                                                                                                                                            |
+| ------------------------------------ | ----------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Busca de cidades (`cityKeys.search`) | 24 h        | 24 h     | Cidades não mudam. Poucos KB em memória.                                                                                                                                                                          |
+| Cidade por id (`cityKeys.detail`)    | 24 h        | 24 h     | Idem.                                                                                                                                                                                                             |
+| Previsão (`forecastKeys.byCoords`)   | 15 min      | 30 min   | Muda, mas não a cada segundo. Até 30 min, a previsão antiga aparece na hora e é atualizada em segundo plano. Depois disso, o loading é mais honesto que uma recomendação de horas atrás que muda sozinha na tela. |
+
+**`gcTime` ≥ `staleTime`:** o `gcTime` só conta quando nenhuma tela usa a query e, ao expirar, apaga o dado. Se fosse menor que o `staleTime`, o dado sumiria antes de deixar de ser fresco, e o `staleTime` não valeria depois que a pessoa sai da tela.
+
+**O cache é em memória:** fechar o app (ou o sistema matar o processo) zera tudo. O que precisa sobreviver ao fechamento, as buscas recentes, vai para o AsyncStorage (012). Tocar numa cidade recente semeia o cache, como um resultado de busca. Um _persister_ do TanStack Query não se paga aqui.
+
+**Foco do app (`useAppStateFocus`):** no navegador, o TanStack Query refaz queries stale quando a aba volta ao foco. No RN esse evento não existe, então o `focusManager` é ligado ao `AppState`. Ao voltar do segundo plano, a previsão stale é atualizada sem a pessoa sair da tela. Dado ainda fresco não gera requisição.
 
 **Retry seletivo:** `retry: (count, error) => isRetryable(error) && count < 2`. Só falhas transitórias (`NetworkError`, `HttpError` 5xx) são repetidas. Repetir erro de contrato (4xx, `ParseError`) só atrasa a mensagem ao usuário.
 
