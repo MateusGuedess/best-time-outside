@@ -1,4 +1,4 @@
-import { citySchema, citySearchSchema } from "@/schemas/geocoding.schema";
+import { geocodingCitySchema, geocodingSearchSchema } from "@/schemas/geocoding.schema";
 import type { City } from "@/types/city";
 import type { Language } from "@/types/language";
 
@@ -18,10 +18,10 @@ export function searchCities(
     language,
     format: "json",
   });
-  return httpGet(`${GEOCODING_URL}/search?${params}`, citySearchSchema, signal);
+  return httpGet(`${GEOCODING_URL}/search?${params}`, geocodingSearchSchema, signal);
 }
 
 export function getCity(id: number, language: Language, signal?: AbortSignal): Promise<City> {
   const params = new URLSearchParams({ id: String(id), language });
-  return httpGet(`${GEOCODING_URL}/get?${params}`, citySchema, signal);
+  return httpGet(`${GEOCODING_URL}/get?${params}`, geocodingCitySchema, signal);
 }

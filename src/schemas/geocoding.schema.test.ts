@@ -1,4 +1,4 @@
-import { citySchema, citySearchSchema } from "./geocoding.schema";
+import { geocodingCitySchema, geocodingSearchSchema } from "./geocoding.schema";
 
 const santaMaria = {
   id: 3450083,
@@ -15,9 +15,9 @@ const santaMaria = {
   admin2: "Santa Maria",
 };
 
-describe("citySchema", () => {
+describe("geocodingCitySchema", () => {
   it("maps the API shape to the domain shape", () => {
-    expect(citySchema.parse(santaMaria)).toEqual({
+    expect(geocodingCitySchema.parse(santaMaria)).toEqual({
       id: 3450083,
       name: "Santa Maria",
       latitude: -29.68417,
@@ -31,7 +31,7 @@ describe("citySchema", () => {
   it("accepts a city without the optional fields", () => {
     const { admin1, country, country_code, ...minimal } = santaMaria;
 
-    expect(citySchema.parse(minimal)).toEqual({
+    expect(geocodingCitySchema.parse(minimal)).toEqual({
       id: 3450083,
       name: "Santa Maria",
       latitude: -29.68417,
@@ -45,21 +45,21 @@ describe("citySchema", () => {
   it("rejects a city without coordinates", () => {
     const { latitude, ...withoutLatitude } = santaMaria;
 
-    expect(citySchema.safeParse(withoutLatitude).success).toBe(false);
+    expect(geocodingCitySchema.safeParse(withoutLatitude).success).toBe(false);
   });
 });
 
-describe("citySearchSchema", () => {
+describe("geocodingSearchSchema", () => {
   it("returns the list of cities", () => {
-    expect(citySearchSchema.parse({ results: [santaMaria] })).toHaveLength(1);
+    expect(geocodingSearchSchema.parse({ results: [santaMaria] })).toHaveLength(1);
   });
 
   it("returns an empty list when the API omits results", () => {
-    expect(citySearchSchema.parse({ generationtime_ms: 0.14 })).toEqual([]);
+    expect(geocodingSearchSchema.parse({ generationtime_ms: 0.14 })).toEqual([]);
   });
 
   it("rejects the whole response when a city is malformed", () => {
-    const result = citySearchSchema.safeParse({ results: [{ ...santaMaria, id: "x" }] });
+    const result = geocodingSearchSchema.safeParse({ results: [{ ...santaMaria, id: "x" }] });
 
     expect(result.success).toBe(false);
   });

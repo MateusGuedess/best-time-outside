@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const citySchema = z
+import type { City } from "@/types/city";
+
+export const geocodingCitySchema = z
   .object({
     id: z.number().int(),
     name: z.string(),
@@ -10,7 +12,7 @@ export const citySchema = z
     country: z.string().optional(),
     country_code: z.string().length(2).optional(),
   })
-  .transform(({ id, name, latitude, longitude, admin1, country, country_code }) => ({
+  .transform(({ id, name, latitude, longitude, admin1, country, country_code }): City => ({
     id,
     name,
     latitude,
@@ -20,6 +22,6 @@ export const citySchema = z
     countryCode: country_code?.toUpperCase(),
   }));
 
-export const citySearchSchema = z
-  .object({ results: z.array(citySchema).default([]) })
+export const geocodingSearchSchema = z
+  .object({ results: z.array(geocodingCitySchema).default([]) })
   .transform(({ results }) => results);
