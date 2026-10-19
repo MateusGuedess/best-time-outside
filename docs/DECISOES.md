@@ -196,13 +196,13 @@ Quase tudo que um Redux/Zustand guardaria aqui é estado de servidor, que já é
 ### Arquitetura da camada de dados (004 + 005 + 006)
 
 ```
-SearchScreen                    ← só UI: { data, isLoading, error }
-  ↓ useCitySearch(term)         ← hook da feature: debounce, enabled, placeholder
-  ↓ useQuery(key, queryFn)      ← cache, retry, cancelamento        [004]
-  ↓ searchCities(term, signal)  ← client: monta a URL
-  ↓ httpGet(url, schema, signal)← fetch + erros tipados              [006]
-  ↓ schema.parse(json)          ← valida e normaliza                 [005]
-City[]                          ← objeto de domínio
+SearchScreen                             ← só UI: { cities, isIdle, isSearching, error }
+  ↓ useCitySearch(term)                  ← hook da feature: debounce, enabled, placeholder
+  ↓ useQuery(key, queryFn)               ← cache, retry, cancelamento        [004]
+  ↓ searchCities(term, language, signal) ← client: monta a URL
+  ↓ httpGet(url, schema, signal)         ← fetch + erros tipados             [006]
+  ↓ schema.parse(json)                   ← valida e normaliza                [005]
+City[]                                   ← objeto de domínio
 ```
 
 Cada camada só conhece a de baixo: a tela não sabe que existe `fetch`, e o `httpGet` não sabe que existe React.
@@ -280,6 +280,10 @@ Consequências:
 - O acesso por índice (e o `T | undefined` do `noUncheckedIndexedAccess`) fica confinado a **uma única função** de "zip".
 - O schema valida que **todos os arrays horários têm o mesmo tamanho**. Divergência vira `ParseError`, nunca dado deslocado em silêncio.
 
+**Lista estrita:** se um item da lista de cidades for inválido, a resposta inteira vira `ParseError`. É uma escolha consciente: a API é estável, e uma quebra de contrato deve aparecer, não ser escondida. A alternativa tolerante (descartar só o item, ou só o campo opcional inválido) fica registrada caso a API se mostre instável.
+
+**Dois schemas por entidade, quando o dado tem mais de uma origem:** a `City` chega da API e também do AsyncStorage (012). `city.schema.ts` descreve a cidade **no formato do app** e é a fonte do tipo `City` (`z.output`). `geocoding.schema.ts` descreve o formato da API e o transforma em `City`. O storage valida direto com o schema de domínio, porque grava o formato do app, não o da API.
+
 ---
 
 ## 006 — Cliente HTTP: `fetch` nativo + wrapper fino
@@ -329,8 +333,9 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 1. **Tokens semânticos, nunca valores crus:** `bg-surface`, `text-muted`, `bg-score-good`, e não `bg-white` ou `text-slate-500`. O nome descreve o **papel**, não a cor.
 2. **Dark mode num único lugar:** cores definidas como variáveis CSS (`:root` / `.dark`) em `global.css` e referenciadas no `tailwind.config.js`. Componentes **não usam o prefixo `dark:`**.
 3. **Variantes com `tailwind-variants`:** componentes com variação (`Badge`, `Button`, `Card`) expõem uma API tipada (`score: "good" | "ok" | "bad"`) em vez de concatenar strings com `if`.
-4. **Classes sempre escritas por inteiro:** `bg-${cor}` não funciona, porque o Tailwind só gera classes que encontra literalmente no código. A variação é feita via `tv()`.
-5. **Componentes base** (`Text`, `Card`, `Badge`, `Screen`) para evitar strings longas repetidas.
+4. **`className` só acrescenta, nunca sobrescreve a variante:** sem `tailwind-merge`, duas classes conflitantes (`text-text` + `text-background`) não se resolvem pela ordem na string, e sim pela ordem no CSS gerado. Na revisão, isso deixou o texto do botão "Tentar novamente" ilegível e a bandeira pequena. Cor, tamanho e peso de texto mudam por variante (`onAccent`, `emoji`). A `className` fica para layout (margem, alinhamento).
+5. **Classes sempre escritas por inteiro:** `bg-${cor}` não funciona, porque o Tailwind só gera classes que encontra literalmente no código. A variação é feita via `tv()`.
+6. **Componentes base** (`Text`, `Card`, `Badge`, `Screen`) para evitar strings longas repetidas.
 
 ### Princípios de design (independentes da lib)
 
@@ -381,12 +386,14 @@ src/
     RecentCities.tsx
     RecommendationCard.tsx
     HourlyTimeline.tsx
-  hooks/                      # useCitySearch, useCity, useForecast, useDebouncedValue, useRecentCities
+  hooks/                      # useCitySearch, useCity, useForecast, useDebouncedValue, useRecentCities, useLanguage
   services/                   # comunicação: http.ts, queryKeys.ts, geocoding.ts, forecast.ts
-  schemas/                    # validação/transformação Zod: geocoding.schema.ts, forecast.schema.ts
+  schemas/                    # Zod: city.schema.ts (domínio), geocoding.schema.ts e forecast.schema.ts (API)
   types/                      # tipos do app: city.ts, forecast.ts, recommendation.ts
   recommendation/             # algoritmo: funções PURAS, sem React (score, window, describe, suggestions, config)
   i18n/                       # configuração do i18next + locales/{pt,en,es}.json (013)
+  test/                       # helpers de teste (QueryClient de teste)
+  __tests__/                  # testes de tela (fora de app/, ver regra 1)
 global.css                    # variáveis de tema claro/escuro (007)
 tailwind.config.js
 ```
@@ -394,6 +401,7 @@ tailwind.config.js
 ### Regras
 
 1. **Telas moram em `src/app/`** (convenção do template atual do Expo). Com Expo Router, o arquivo de rota é a tela. Uma pasta `screens/` seria duplicação.
+   - **Nada além de rotas em `src/app/`:** o Expo Router transforma todo arquivo da pasta em rota, inclusive `*.test.tsx`, e quebra o bundle. Testes de tela ficam em `src/__tests__/`.
 2. **Componentes separados por reuso, não por assunto.** Critério: "o componente conhece o domínio (cidade, clima)?" Não → `ui/`. Sim → `components/`. Com poucos componentes de domínio, sem subpastas.
 3. **Sem wrapper sem ganho.** Não existe `SearchInput` (é o `Input` com ícone via prop) nem `CityList` (é um `FlatList` direto).
 4. **O formato da API não sai de `schemas/`.** Cada schema tem tipo de entrada (`z.input`, formato Open-Meteo) e de saída (`z.output`, formato do app). Componentes, hooks e algoritmo importam só de `types/`. Trocar de API afeta apenas `schemas/` e `services/`.
@@ -624,7 +632,7 @@ Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta
 | `expo-localization` + `i18n-js`                       | Mais leve, exemplo da documentação do Expo.                 | Menos recursos e menos adotado.               |
 | Implementação própria (objeto + `t`)                  | Zero dependências.                                          | Reimplementa plural, interpolação e fallback. |
 
-**Decisão:** `i18next` + `react-i18next`, com `expo-localization` para ler o idioma do aparelho. Traduções em `src/i18n/locales/{pt,en,es}.json`.
+**Decisão:** `i18next` + `react-i18next`, com `expo-localization` para ler o idioma do aparelho. Traduções em `src/i18n/locales/{pt,en,es}.json`. O idioma é resolvido na abertura e acompanha mudanças do aparelho com o app aberto (`useLocales` + `useDeviceLanguageSync`). O iOS reinicia o app ao trocar o idioma, mas o Android nem sempre.
 
 **Consequências na arquitetura:**
 
