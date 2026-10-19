@@ -125,7 +125,7 @@ Arquivos em `src/app/` são as telas e compõem componentes de `src/components` 
 **Como evitamos a requisição duplicada:** ao tocar num resultado da busca, a cidade já está em mãos. Ela é gravada no cache antes de navegar:
 
 ```ts
-queryClient.setQueryData(cityKeys.detail(city.id), city);
+queryClient.setQueryData(cityKeys.detail(city.id, language), city);
 router.push(`/city/${city.id}`);
 ```
 
@@ -138,8 +138,8 @@ Centralizadas numa **query key factory**, em ordem hierárquica `[domínio, tipo
 ```ts
 export const cityKeys = {
   all: ["city"] as const,
-  search: (term: string) => ["city", "search", term] as const,
-  detail: (id: number) => ["city", "detail", id] as const,
+  search: (term: string, language: Language) => ["city", "search", { term, language }] as const,
+  detail: (id: number, language: Language) => ["city", "detail", { id, language }] as const,
 };
 
 export const forecastKeys = {
@@ -149,6 +149,8 @@ export const forecastKeys = {
 ```
 
 A comparação é posicional nos itens do array, mas **ignora a ordem das propriedades dentro de objetos**. Por isso a previsão usa um objeto `{ lat, lon }` no último nível.
+
+**O idioma faz parte da key de cidade:** a Geocoding API devolve nomes traduzidos ("Lisboa" em `pt`, "Lisbon" em `en`, ver 013). Sem o idioma na key, trocar o idioma do aparelho serviria do cache nomes no idioma antigo.
 
 ### UX de navegação
 
