@@ -3,11 +3,13 @@ import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CityListItem } from "@/components/CityListItem";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Input } from "@/components/ui/Input";
+import { PaperTexture } from "@/components/ui/PaperTexture";
 import { Text } from "@/components/ui/Text";
 import { useCitySearch } from "@/hooks/useCitySearch";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -28,6 +30,7 @@ export default function SearchScreen() {
   const [term, setTerm] = useState("");
   const search = useCitySearch(term);
   const recent = useRecentCities();
+  const insets = useSafeAreaInsets();
 
   const openCity = (city: City) => {
     queryClient.setQueryData(cityKeys.detail(city.id, language), city);
@@ -54,9 +57,14 @@ export default function SearchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <Stack.Screen options={{ title: t("search.title") }} />
-      <View className="px-4 pb-2 pt-4">
+      <View className="px-6 pb-2 pt-6">
+        <Text variant="heading" accessibilityRole="header">
+          {t("search.title")}
+        </Text>
+      </View>
+      <View className="px-4 pb-2 pt-2">
         <Input
           value={term}
           onChangeText={setTerm}
@@ -85,6 +93,7 @@ export default function SearchScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       />
+      <PaperTexture />
     </View>
   );
 }

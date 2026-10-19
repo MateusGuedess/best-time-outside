@@ -10,11 +10,12 @@ module.exports = {
         text: "rgb(var(--color-text) / <alpha-value>)",
         muted: "rgb(var(--color-muted) / <alpha-value>)",
         accent: "rgb(var(--color-accent) / <alpha-value>)",
-        score: {
-          good: "rgb(var(--color-score-good) / <alpha-value>)",
-          ok: "rgb(var(--color-score-ok) / <alpha-value>)",
-          bad: "rgb(var(--color-score-bad) / <alpha-value>)",
-        },
+      },
+      fontFamily: {
+        jost: ["Jost_400Regular"],
+        "jost-thin": ["Jost_200ExtraLight"],
+        "jost-light": ["Jost_300Light"],
+        "jost-medium": ["Jost_500Medium"],
       },
     },
   },

@@ -4,11 +4,15 @@ import { tv, type VariantProps } from "tailwind-variants/lite";
 const text = tv({
   variants: {
     variant: {
-      title: "text-xl font-semibold text-text",
-      body: "text-base text-text",
-      muted: "text-base text-muted",
-      caption: "text-sm text-muted",
-      onAccent: "text-base font-semibold text-background",
+      display: "font-jost-thin text-[84px] leading-[90px] text-text",
+      unit: "font-jost-light text-2xl text-text",
+      heading: "font-jost-light text-2xl text-text",
+      label: "font-jost-medium text-xs uppercase tracking-[4px] text-text",
+      title: "font-jost-medium text-xl text-text",
+      body: "font-jost text-base text-text",
+      muted: "font-jost text-base text-muted",
+      caption: "font-jost text-sm text-muted",
+      onAccent: "font-jost-medium text-base text-text",
       emoji: "text-2xl",
     },
   },

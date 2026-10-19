@@ -22,7 +22,12 @@
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "plugins": ["expo-router", "expo-localization"],
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-font",
+      "expo-asset"
+    ],
     "scheme": "best-time-outside",
     "experiments": {
       "typedRoutes": true

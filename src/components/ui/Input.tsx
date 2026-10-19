@@ -14,7 +14,7 @@ export function Input({ value, onClear, clearLabel, ...props }: InputProps) {
     <View className="h-12 flex-row items-center rounded-xl bg-surface pl-4">
       <TextInput
         value={value}
-        className="h-full flex-1 text-base text-text"
+        className="h-full flex-1 font-jost text-base text-text"
         placeholderClassName="text-muted"
         {...props}
       />
