@@ -17,5 +17,48 @@
     "server": "The weather service is unstable. Please try again.",
     "generic": "Something went wrong while loading.",
     "retry": "Try again"
+  },
+  "suggestions": {
+    "day": {
+      "pleasant": {
+        "park": "Walk in the park",
+        "run": "Go for a run",
+        "picnic": "Picnic"
+      },
+      "hot": {
+        "beach": "Beach or pool",
+        "iceCream": "Ice cream",
+        "shadeWalk": "Walk in the shade"
+      },
+      "cold": {
+        "sunWalk": "Walk in the sun",
+        "viewCafe": "Café with a view"
+      },
+      "indoor": {
+        "cinema": "Movie theater",
+        "museum": "Museum",
+        "cafe": "Café"
+      }
+    },
+    "night": {
+      "pleasant": {
+        "sidewalkBar": "Bar with sidewalk tables",
+        "outdoorDinner": "Outdoor dinner"
+      },
+      "hot": {
+        "bar": "Bar",
+        "acai": "Açaí",
+        "boardwalk": "Walk along the waterfront"
+      },
+      "cold": {
+        "soupRestaurant": "Soup restaurant",
+        "fondue": "Fondue",
+        "hotChocolate": "Hot chocolate at a café"
+      },
+      "indoor": {
+        "movieAtHome": "Movie at home",
+        "cozyRestaurant": "Cozy restaurant"
+      }
+    }
   }
 }

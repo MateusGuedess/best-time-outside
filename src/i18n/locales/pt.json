@@ -17,5 +17,48 @@
     "server": "O serviço de clima está instável. Tente novamente.",
     "generic": "Não foi possível carregar.",
     "retry": "Tentar novamente"
+  },
+  "suggestions": {
+    "day": {
+      "pleasant": {
+        "park": "Caminhada no parque",
+        "run": "Corrida",
+        "picnic": "Piquenique"
+      },
+      "hot": {
+        "beach": "Praia ou piscina",
+        "iceCream": "Sorvete",
+        "shadeWalk": "Passeio na sombra"
+      },
+      "cold": {
+        "sunWalk": "Caminhada ao sol",
+        "viewCafe": "Café com vista"
+      },
+      "indoor": {
+        "cinema": "Cinema",
+        "museum": "Museu",
+        "cafe": "Café"
+      }
+    },
+    "night": {
+      "pleasant": {
+        "sidewalkBar": "Barzinho com mesa na calçada",
+        "outdoorDinner": "Jantar ao ar livre"
+      },
+      "hot": {
+        "bar": "Barzinho",
+        "acai": "Açaí",
+        "boardwalk": "Caminhada na orla"
+      },
+      "cold": {
+        "soupRestaurant": "Restaurante de sopa",
+        "fondue": "Fondue",
+        "hotChocolate": "Chocolate quente numa cafeteria"
+      },
+      "indoor": {
+        "movieAtHome": "Filme em casa",
+        "cozyRestaurant": "Restaurante aconchegante"
+      }
+    }
   }
 }
