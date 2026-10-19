@@ -106,12 +106,24 @@ describe("useCitySearch", () => {
     await type("lisbon");
     await waitForDebounce();
 
-    expect(result.current.isFetching).toBe(true);
+    expect(result.current.isSearching).toBe(true);
     expect(result.current.cities).toEqual([city(1, "Lisboa")]);
 
     await act(async () => nextSearch.resolve([city(2, "Lisbon")]));
 
     await waitFor(() => expect(result.current.cities).toEqual([city(2, "Lisbon")]));
+  });
+
+  it("reports searching while the user is still typing", async () => {
+    searchCitiesMock.mockResolvedValue([]);
+    const { result, type } = await renderSearch();
+
+    await type("lisboa");
+
+    expect(result.current.isSearching).toBe(true);
+
+    await waitForDebounce();
+    await waitFor(() => expect(result.current.isSearching).toBe(false));
   });
 
   it("clears the results as soon as the field is cleared", async () => {

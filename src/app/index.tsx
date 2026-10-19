@@ -1,20 +1,90 @@
-import { Text, View } from "react-native";
-import { useColorScheme } from "nativewind";
+import { useQueryClient } from "@tanstack/react-query";
+import { Stack, useRouter } from "expo-router";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FlatList, View } from "react-native";
 
-export default function SpikeScreen() {
-  const { colorScheme } = useColorScheme();
+import { CityListItem } from "@/components/CityListItem";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { Input } from "@/components/ui/Input";
+import { Text } from "@/components/ui/Text";
+import { useCitySearch } from "@/hooks/useCitySearch";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useRecentCities } from "@/hooks/useRecentCities";
+import { errorMessageKey } from "@/i18n/errorMessageKey";
+import { cityKeys } from "@/services/queryKeys";
+import type { City } from "@/types/city";
+
+function Separator() {
+  return <View className="mx-4 h-px bg-muted/20" />;
+}
+
+export default function SearchScreen() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const language = useLanguage();
+  const [term, setTerm] = useState("");
+  const search = useCitySearch(term);
+  const recent = useRecentCities();
+
+  const openCity = (city: City) => {
+    queryClient.setQueryData(cityKeys.detail(city.id, language), city);
+    recent.add(city);
+    router.push({ pathname: "/city/[id]", params: { id: String(city.id) } });
+  };
+
+  const showRecent = search.isIdle && recent.cities.length > 0;
+  const cities = showRecent ? recent.cities : (search.cities ?? []);
+
+  const renderFeedback = () => {
+    if (search.isIdle) return <EmptyState message={t("search.intro")} />;
+    if (search.isSearching) return <EmptyState message={t("search.loading")} isLoading />;
+    if (search.error) {
+      return (
+        <ErrorState
+          message={t(errorMessageKey(search.error))}
+          retryLabel={t("errors.retry")}
+          onRetry={() => void search.refetch()}
+        />
+      );
+    }
+    return <EmptyState message={t("search.noResults", { term: term.trim() })} />;
+  };
 
   return (
-    <View className="flex-1 items-center justify-center gap-4 bg-background p-6">
-      <View className="w-full rounded-2xl bg-surface p-6">
-        <Text className="text-2xl font-bold text-text">NativeWind OK</Text>
-        <Text className="mt-2 text-muted">Tema atual: {colorScheme}</Text>
-        <View className="mt-4 flex-row gap-2">
-          <View className="h-6 flex-1 rounded-full bg-score-good" />
-          <View className="h-6 flex-1 rounded-full bg-score-ok" />
-          <View className="h-6 flex-1 rounded-full bg-score-bad" />
-        </View>
+    <View className="flex-1 bg-background">
+      <Stack.Screen options={{ title: t("search.title") }} />
+      <View className="px-4 pb-2 pt-4">
+        <Input
+          value={term}
+          onChangeText={setTerm}
+          onClear={() => setTerm("")}
+          clearLabel={t("search.clear")}
+          placeholder={t("search.placeholder")}
+          accessibilityLabel={t("search.placeholder")}
+          autoFocus
+          autoCorrect={false}
+          returnKeyType="search"
+        />
       </View>
+      <FlatList
+        data={cities}
+        keyExtractor={(city) => String(city.id)}
+        renderItem={({ item }) => <CityListItem city={item} onPress={openCity} />}
+        ItemSeparatorComponent={Separator}
+        ListHeaderComponent={
+          showRecent ? (
+            <Text variant="caption" className="px-4 pb-1 pt-3 uppercase">
+              {t("search.recent")}
+            </Text>
+          ) : null
+        }
+        ListEmptyComponent={renderFeedback()}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      />
     </View>
   );
 }

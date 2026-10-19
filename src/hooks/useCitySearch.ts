@@ -24,14 +24,14 @@ export function useCitySearch(term: string) {
     ...cacheTimes.city,
   });
 
-  const isIdle = !enabled || trimmedTerm.length < MIN_SEARCH_LENGTH;
+  const isIdle = trimmedTerm.length < MIN_SEARCH_LENGTH;
+  const isSearching = !isIdle && (query.isFetching || trimmedTerm !== debouncedTerm);
 
   return {
     cities: isIdle ? undefined : query.data,
     isIdle,
-    isLoading: !isIdle && query.isLoading,
-    isFetching: !isIdle && query.isFetching,
-    error: isIdle ? null : query.error,
+    isSearching,
+    error: isIdle || isSearching ? null : query.error,
     refetch: query.refetch,
   };
 }
