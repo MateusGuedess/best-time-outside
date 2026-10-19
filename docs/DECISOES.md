@@ -333,7 +333,7 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 ### Regras de uso
 
 1. **Tokens semânticos, nunca valores crus:** `bg-surface`, `text-muted`, `bg-score-good`, e não `bg-white` ou `text-slate-500`. O nome descreve o **papel**, não a cor.
-2. **Dark mode num único lugar:** cores definidas como variáveis CSS (`:root` / `.dark`) em `global.css` e referenciadas no `tailwind.config.js`. Componentes **não usam o prefixo `dark:`**.
+2. **Tema num único lugar:** as cores ficam em `src/theme/palette.ts` (esquema claro/escuro × período dia/noite). O `<PeriodTheme>` aplica as do período como variáveis CSS com `vars()` do NativeWind, e o `tailwind.config.js` as referencia. Componentes **não usam o prefixo `dark:`** nem sabem em que período estão: `bg-background` é papel na página do dia e quase preto na da noite. As ilustrações SVG, que não leem `className`, pegam as mesmas cores em hex via `usePeriodColors()`. (Revisto em 19/10/2026: antes eram variáveis fixas em `global.css` com media query, o que não comporta uma página escura dentro do modo claro.)
 3. **Variantes com `tailwind-variants`:** componentes com variação (`Badge`, `Button`, `Card`) expõem uma API tipada (`score: "good" | "ok" | "bad"`) em vez de concatenar strings com `if`.
 4. **`className` só acrescenta, nunca sobrescreve a variante:** sem `tailwind-merge`, duas classes conflitantes (`text-text` + `text-background`) não se resolvem pela ordem na string, e sim pela ordem no CSS gerado. Na revisão, isso deixou o texto do botão "Tentar novamente" ilegível e a bandeira pequena. Cor, tamanho e peso de texto mudam por variante (`onAccent`, `emoji`). A `className` fica para layout (margem, alinhamento).
 5. **Classes sempre escritas por inteiro:** `bg-${cor}` não funciona, porque o Tailwind só gera classes que encontra literalmente no código. A variação é feita via `tv()`.
@@ -344,13 +344,44 @@ Cancelamentos disparados pelo TanStack Query (via `signal`) **não** são exibid
 - **Interface neutra com um único acento.** As cores de score (`good` / `ok` / `bad`) são **semânticas**: indicam a qualidade da hora, não decoram.
 - **Cor nunca é a única informação:** o score sempre vem com texto ou ícone ("Ótimo", "Bom", "Evite"), por acessibilidade (daltonismo).
 - **Identidade visual própria:** não reproduz a marca do PicPay.
-- **Fonte do sistema** (SF / Roboto): aparência nativa, sem custo de carregamento.
+- **Fonte Jost** (geométrica, pesos 200–500), via `@expo-google-fonts/jost`. Revisto em 19/10/2026: a fonte do sistema foi trocada para seguir a referência visual (ver abaixo). Custo: carregar a fonte antes da primeira tela. Os pesos são famílias separadas (`font-jost-light`), porque `fontWeight` com fonte customizada não é confiável no Android.
 - **Escala de fonte do sistema respeitada** (`allowFontScaling` padrão). `maxFontSizeMultiplier` só onde o layout quebraria.
 - **Área de toque mínima de 44×44 pt** (Apple HIG; Android recomenda 48 dp).
 
-### Pendência: paleta de cores
+### Referência visual e paleta (19/10/2026)
 
-**Os valores das cores ainda não foram definidos.** Está decidida apenas a estrutura: os tokens `background`, `surface`, `text`, `muted`, `accent`, `score-good`, `score-ok`, `score-bad`, cada um com versão clara e escura. A paleta será escolhida durante a construção da UI, com as telas reais, para validar contraste (WCAG AA: 4.5:1 para texto) e harmonia.
+A UI segue uma referência visual de app de clima com estética japonesa: papel claro, tipografia fina, uma ilustração grande por condição (sol vermelho, nuvem, lua dourada), reflexo em linhas e uma faixa de ícones de traço fino. **É inspiração, não cópia:** as ilustrações são desenhadas para o app, e o README credita a referência.
+
+**Cores extraídas da imagem** (amostragem de pixels):
+
+| Token / uso         | Dia (claro) | Noite (claro)         |
+| ------------------- | ----------- | --------------------- |
+| `background`        | `#F7F2EB`   | `#252525`             |
+| `text`              | `#000000`   | `#FFFFFF`             |
+| `muted`             | `#5D5850`   | `#CDCDCD`             |
+| `accent` (destaque) | `#EFD8BC`   | —                     |
+| `surface` (campo)   | `#E6DFDB`   | —                     |
+| Sol                 | `#E51B0E`   | —                     |
+| Lua / sombra        | —           | `#D8915A` / `#B1784C` |
+| Nuvem               | `#605F5F`   | —                     |
+
+**Revisão da lua (19/10/2026):** o dourado pálido da primeira referência (`#E1C198`) ficou sem vida no aparelho. Os tons atuais foram amostrados de um segundo print de referência, com uma lua âmbar mais saturada. O destaque da noite passou a usar o tom do reflexo (`#6F4C33`), e o texto branco sobre ele tem contraste de 7.6:1.
+
+**Cores derivadas** (a imagem não tem): o modo escuro inteiro e os tokens que faltam na noite clara. No modo escuro, as duas páginas são quase pretas, mas distintas: **dia** `#1F1C19` (quente, do tom do papel) e **noite** `#141518` (mais fundo, levemente frio). Sol e lua ficam mais apagados (`#C4473B`, `#C2824F`) para não brilharem demais. Valores completos em `palette.ts`.
+
+**Contraste (WCAG AA, 4.5:1):** todas as combinações de texto passam, a menor é 5.35:1 (`muted` sobre `surface`). Sol e lua só aparecem em ilustração, nunca em texto.
+
+**Mar e pássaros (19/10/2026):** o horizonte corta o disco ao meio (só a metade de cima do sol ou da lua aparece), e o mar começa logo abaixo, com a nuvem apoiada no horizonte. As faixas que cortavam a parte de baixo do disco saíram. O mar é um **reflexo**: linhas um pouco mais largas que o disco (1,45× o raio para cada lado), na cor do próprio sol ou da lua, desbotando para as laterais e com a profundidade. O degradê usa `userSpaceOnUse`, então a faixa colorida fica centrada no disco seja qual for a largura da tela. (Uma versão anterior ocupava a tela de ponta a ponta e foi descartada: parecia listras, não reflexo.) O efeito "borrado" vem de um halo largo e transparente atrás de cada linha, e não de `FeGaussianBlur`: o filtro seria recalculado a cada quadro da animação. Os pássaros são silhuetas preenchidas (corpo, cauda em leque, asas com pontas de pena), num arquivo puro (`birdShape.ts`) que roda como worklet no app e também gera as prévias. Na lua, o bando de 4 alterna a direção a cada travessia, e cada pássaro tem a sua trajetória: reta, ondulando de leve ou descendo.
+
+**Cena em camadas (19/10/2026):** a primeira versão trocava a cena inteira pela nuvem de chuva, e aí nada indicava se era dia ou noite: as duas páginas mostravam a mesma nuvem. Agora `sceneFor` devolve três camadas independentes: o astro (sol ou lua, pelo período), o céu (limpo, chuva ou tempestade) e o vento (o nível da janela). O período fica sempre visível, e as combinações (noite com tempestade, dia chuvoso e ventando) saem sem casos especiais. A nuvem de chuva fica à frente do disco, menor, como num ícone de clima, e a chuva cai sobre o mar.
+
+**Chuva e tempestade (19/10/2026):** a nuvem balança devagar para os lados, e as gotas caem em diagonal, cada uma com sua fase, acompanhando a nuvem. Na tempestade, um clarão amarelo pisca por trás da nuvem em dois pulsos rápidos, o segundo mais fraco, como um raio de verdade, e fica apagado o resto do ciclo. Um raio pequeno fica recortado no canto superior direito da nuvem. A cor do clarão (`flash`) é derivada, a referência não tem: `#F2C14E` no dia claro, `#F5D98B` na noite clara, versões mais apagadas no modo escuro. As formas ficam em `rainShape.ts`, um arquivo puro, como as dos pássaros. As espirais da nuvem são geradas matematicamente (o raio cresce a cada volta), porque desenhadas à mão pareciam letras.
+
+**Textura de papel:** um PNG de 256×256 (`assets/textures/paper@2x.png`), gerado por script (grão fino + manchas suaves + fibras) e repetido como camada dentro de cada tela, por cima do conteúdo, com `pointerEvents="none"`. Fica **dentro** da página que desliza e rola, e não fixa na janela: fixa, ela parecia "colada no vidro" enquanto o conteúdo passava por baixo. Por isso as telas não usam o cabeçalho nativo, que ficaria fora da textura e criaria uma emenda: a busca tem título próprio, como a tela da cidade. Os pontos são claros e escuros com transparência baixa, então a mesma textura funciona no papel e nos fundos escuros. Fica por cima das ilustrações também, como na referência. Há duas variantes, `paper.png` (128 px) e `paper@2x.png` (256 px): cada bloco ocupa 128 pt e o grão fica fino em qualquer densidade de tela. A textura é **pré-carregada na abertura** (`useAssets`, junto com as fontes). Sem isso, cada tela nova montava a imagem do zero e ela aparecia "carregando", principalmente no Expo Go, onde os assets vêm do Metro pela rede.
+
+**Faixa de horas com `ScrollView`, não `FlatList`:** a página já está dentro da `FlatList` horizontal do deslizar dia/noite. Uma lista virtualizada dentro de outra com a mesma orientação desiste da própria rolagem e desenha os itens numa `View` comum (`VirtualizedList.js`), que empilha na vertical. São no máximo ~24 horas, então virtualizar não traz ganho. Um teste garante que a faixa rola na horizontal.
+
+**Tokens `score-*` removidos:** o rótulo ("Ótimo", "Bom", "Evite") é mostrado como palavra, e a ilustração muda com a condição. Uma cor por score seria decoração redundante.
 
 ### Riscos e mitigações
 
@@ -523,16 +554,20 @@ Fatores favoráveis compõem a frase principal ("Temperatura agradável, baixa c
 
 ### 9.7 Sugestões de atividade
 
-Cada card traz **2–3 sugestões** (como chaves de tradução, ver 013) escolhidas por uma **tabela fixa** (período × condição dominante da janela), em `src/recommendation/suggestions.ts`. São **dados, não lógica**: adicionar uma sugestão é adicionar uma linha. A escolha é **determinística**, para manter os testes previsíveis.
+Cada card traz **2–3 sugestões** (como chaves de tradução, ver 013) escolhidas por uma **tabela fixa** (parte do dia × condição dominante da janela), em `src/recommendation/suggestions.ts`. São **dados, não lógica**: adicionar uma sugestão é adicionar uma linha. A escolha é **determinística**, para manter os testes previsíveis.
 
 **Condição dominante:** janela com rótulo **"Evite" → atividades em ambiente fechado** (`indoor`). Senão, decide a temperatura: frio → frio, quente ou muito quente → quente, o resto → agradável. A versão inicial olhava só os fatores ("chuva provável → chuva") e falhava nos dois sentidos: 45% de chuva dá "Evite" mas sugeria parque, e uma noite fria com rótulo "Bom" sugeria ficar em casa. Ligar a sugestão ao rótulo garante a regra abaixo por construção. Chuva provável ou tempestade já levam qualquer janela a "Evite", então nenhum caso de chuva se perde.
 
-| Condição  | Dia                                          | Noite                                              |
-| --------- | -------------------------------------------- | -------------------------------------------------- |
-| Agradável | caminhada no parque, corrida, piquenique     | barzinho com mesa na calçada, jantar ao ar livre   |
-| Quente    | praia ou piscina, sorvete, passeio na sombra | barzinho, açaí, caminhada na orla                  |
-| Frio      | caminhada ao sol, café com vista             | restaurante de sopa, fondue, chocolate quente fora |
-| Evite     | cinema, museu, café                          | filme em casa, restaurante aconchegante            |
+**Parte do dia (revisão de 19/10/2026):** a primeira versão olhava só dia ou noite, e numa janela às 7h com chuva sugeria cinema e museu, que estão fechados nesse horário. A tabela passou a usar a **hora de início da janela**: manhã (5h–12h), tarde (12h–18h), noite (18h–22h) e madrugada (22h–5h). Cada célula só tem lugares que costumam estar abertos naquele horário.
+
+| Condição  | Manhã                                      | Tarde                             | Noite                                         | Madrugada                           |
+| --------- | ------------------------------------------ | --------------------------------- | --------------------------------------------- | ----------------------------------- |
+| Agradável | parque, corrida, bicicleta                 | parque, piquenique, bicicleta     | barzinho na calçada, jantar ao ar livre       | barzinho na calçada, música ao vivo |
+| Quente    | praia cedo, passeio na sombra, feira       | praia ou piscina, sorvete, sombra | barzinho, açaí, orla                          | barzinho, orla                      |
+| Frio      | caminhada ao sol, café da manhã na padaria | caminhada ao sol, café com vista  | sopa, fondue, chocolate quente numa cafeteria | bar aconchegante, música ao vivo    |
+| Evite     | padaria, academia, mercado municipal       | cinema, museu, café               | cinema, restaurante aconchegante              | filme em casa, pedir jantar         |
+
+As atividades têm chave própria (`activities.park`), não uma por célula: "Caminhada no parque" é traduzida uma vez, mesmo aparecendo de manhã e à tarde. O tipo `SuggestionKey` é derivado da tabela, e o `t()` tipado recusa uma atividade sem tradução em tempo de compilação.
 
 **Motivo:** transforma o estado negativo ("Evite") em algo útil, e o pior cenário do app vira uma recomendação. Sugestões de "ficar em casa" só aparecem quando sair não é uma boa ideia, mantendo o foco do enunciado (atividade ao ar livre).
 
@@ -552,7 +587,20 @@ Casos especiais:
 - **Os dois períodos com rótulo "Evite":** o título vira "Hoje não está um bom dia para sair. Veja algumas ideias abaixo.", e os cards destacam as sugestões.
 - **O dia já acabou:** o card do dia mostra **amanhã**, sinalizado na UI (ver 010).
 
-**O layout visual não está decidido:** esta seção define só a **estrutura da informação**. O desenho das telas será feito combinando esta estrutura com o esboço do autor.
+**Layout (19/10/2026):** a estrutura acima, no estilo da referência visual (007). **Dia e noite são duas páginas com deslizar lateral**, cada uma com o próprio tema: no modo claro, dia em papel e noite escura; no modo escuro, as duas quase pretas, mas distintas. O selo "Melhor do dia" marca a página vencedora, e o app abre nela.
+
+| Elemento da referência     | No app                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Temperatura grande         | Sensação térmica média da janela recomendada                                                                                                                                                                                                                                                                                                                                                   |
+| Palavra vertical ("SUNNY") | Rótulo da janela ("ÓTIMO", "BOM", "EVITE")                                                                                                                                                                                                                                                                                                                                                     |
+| Ilustração                 | Cena em **camadas**: sol (dia) ou lua (noite) sempre visíveis; por cima, a nuvem do tempo (decorativa com tempo bom, de chuva quando a janela é "Evite" e há chance de chuva, de tempestade com clarão quando há tempestade); e rajadas de vento (2 discretas com "Ventando", 4 mais rápidas com "Vento forte"). Com chuva ou tempestade, sol/lua e reflexo ficam apagados e os pássaros somem |
+| Nome da cidade             | Nome da cidade                                                                                                                                                                                                                                                                                                                                                                                 |
+| Faixa de dias              | Horas do período, com a janela recomendada destacada (linha do tempo)                                                                                                                                                                                                                                                                                                                          |
+| —                          | Logo abaixo da temperatura, em duas colunas: motivos ("Por quê") e sugestões ("Ideias"). Tudo cabe na tela sem rolar                                                                                                                                                                                                                                                                           |
+
+**Detalhe de cada hora (19/10/2026):** cada hora da faixa é um botão. Ao tocar, abre uma caixa com a conta daquela hora: o valor de cada fator, a nota (0–100%) e o peso de cada um, o conforto somado, os multiplicadores de chuva e ventania, o veto de tempestade e a nota final. A conta vem de `explainHour` (`score.ts`), a mesma função que o `scoreHour` usa, então a explicação nunca diverge da nota real. Responde "por que essa hora?" sem poluir a tela principal.
+
+**Por que deslizar em vez de cards empilhados:** cada período ganha a tela inteira, a ilustração tem espaço, e a troca de tema dia/noite comunica o período sem texto. Custo: a noite fica a um gesto de distância, então a página precisa indicar que há outra (indicador de páginas).
 
 ### 9.9 Testabilidade
 
@@ -665,7 +713,7 @@ A 009 não especificava estes casos. Cada regra tem um teste em `src/recommendat
 1. **O algoritmo não devolve texto.** `src/recommendation/` devolve **dados estruturados** (`{ temperature: "pleasant", rain: "low", wind: "light" }`, chaves de sugestão), e a UI traduz com `t()`. O domínio não conhece idioma, assim como não conhece React, e os testes do algoritmo não dependem de texto.
 2. **Sugestões são chaves** (`suggestions.night.pleasant.bar`), traduzidas nos 3 idiomas.
 3. **A Geocoding API recebe o idioma do app** (`language=pt|en|es`): "Lisboa" em pt, "Lisbon" em en.
-4. **Horários formatados com `Intl.DateTimeFormat`** no idioma do app: "17h" (pt/es), "5 PM" (en).
+4. **Horários formatados no idioma do app:** "17h" (pt/es), "5 PM" (en), em `src/i18n/format.ts`. Sem `Intl.DateTimeFormat`: em `pt-BR` ele devolve "17", sem o "h", e o suporte a `Intl` no Hermes varia entre versões. São duas regras simples e testadas.
 
 ### Unidades
 
@@ -725,8 +773,8 @@ A 009 não especificava estes casos. Cada regra tem um teste em `src/recommendat
 | -------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | Dark mode                                          | ✅ Incorporado: tema por variáveis CSS (007).                                                   |
 | Linha do tempo horária                             | ✅ Incorporada à tela de recomendação. O formato visual será definido junto com o layout (9.8). |
-| Paleta de cores                                    | ⏳ Definir na construção da UI, validando contraste WCAG AA (007).                              |
-| Layout das telas                                   | ⏳ Combinar a estrutura da 9.8 com o esboço do autor.                                           |
+| Paleta de cores                                    | ✅ Extraída da referência visual, com modo escuro derivado (007).                               |
+| Layout das telas                                   | ✅ Referência visual adaptada à estrutura da 9.8 (ver 9.8).                                     |
 | Seleção de atividade (correr / caminhar / pedalar) | 💤 Extensão, só se o cronograma permitir. Mudaria apenas os pesos em `config.ts`.               |
 | "Usar minha localização"                           | 💤 Extensão, só se o cronograma permitir. `expo-location`, com tratamento de permissão negada.  |
 | APK via EAS Build                                  | ⏳ Gerar ao final e linkar no README (001).                                                     |
