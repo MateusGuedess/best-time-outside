@@ -1,3 +1,4 @@
+import type { Coordinates } from "@/types/forecast";
 import type { Language } from "@/types/language";
 
 export const cityKeys = {
@@ -8,5 +9,5 @@ export const cityKeys = {
 
 export const forecastKeys = {
   all: ["forecast"] as const,
-  byCoords: (coords: { lat: number; lon: number }) => ["forecast", coords] as const,
+  byCoords: (coords: Coordinates) => ["forecast", coords] as const,
 };
