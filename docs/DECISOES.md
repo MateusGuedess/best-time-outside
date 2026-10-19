@@ -280,6 +280,8 @@ Consequências:
 - O acesso por índice (e o `T | undefined` do `noUncheckedIndexedAccess`) fica confinado a **uma única função** de "zip".
 - O schema valida que **todos os arrays horários têm o mesmo tamanho**. Divergência vira `ParseError`, nunca dado deslocado em silêncio.
 
+**Valores ausentes na previsão:** o Open-Meteo devolve `null` numa hora sem dado (fim do horizonte, alguns modelos) e `sunrise/sunset` podem faltar em regiões polares. Isso é comportamento documentado, não quebra de contrato: o schema aceita `null` e **descarta só a hora (ou o dia) incompleta**. Os outros campos seguem estritos.
+
 **Lista estrita:** se um item da lista de cidades for inválido, a resposta inteira vira `ParseError`. É uma escolha consciente: a API é estável, e uma quebra de contrato deve aparecer, não ser escondida. A alternativa tolerante (descartar só o item, ou só o campo opcional inválido) fica registrada caso a API se mostre instável.
 
 **Dois schemas por entidade, quando o dado tem mais de uma origem:** a `City` chega da API e também do AsyncStorage (012). `city.schema.ts` descreve a cidade **no formato do app** e é a fonte do tipo `City` (`z.output`). `geocoding.schema.ts` descreve o formato da API e o transforma em `City`. O storage valida direto com o schema de domínio, porque grava o formato do app, não o da API.
@@ -459,13 +461,17 @@ Exemplo (temperatura): 22°C → 1.0 · 28°C → 0.75 · 30°C → 0.5 · 34°C
 
 ```
 conforto = 0.55 × temperatura + 0.25 × vento + 0.20 × UV
-score    = conforto × nota_chuva × 100
+score    = conforto × nota_chuva × nota_ventania × 100
 veto     : weather_code 95–99 (tempestade) → score = 0
 ```
+
+`nota_ventania` é um trapézio à parte: 1 até 30 km/h, cai até 0 em 50 km/h. Abaixo de 30 km/h só o vento de conforto atua.
 
 À noite, sem UV, os pesos de conforto são redistribuídos: **0.70 temperatura + 0.30 vento**.
 
 **Motivo:** uma média ponderada simples deixa um fator ruim ser compensado pelos bons. Temperatura perfeita, sem vento e com 90% de chuva daria 65 ("Bom"), recomendando sair na chuva. Os fatores de **conforto** se compensam entre si (um pouco de vento num dia perfeito é tolerável). A **chuva** é eliminatória e **multiplica**. Tempestade é questão de segurança: veto explícito.
+
+**Revisão (19/10/2026): vento forte também é eliminatório.** Com a fórmula original, 22°C, sem chuva e vento de 45 km/h davam 75 ("Ótimo"): o vento zerava só os seus 25% de conforto. "Um pouco de vento" se compensa; ventania, não. Em vez de veto (corte brusco), o vento acima de 30 km/h passa a **multiplicar** como a chuva: 35 km/h → 60 ("Bom"), 45 km/h → 19 ("Evite"). UV extremo segue compensável, porque o card já mostra o alerta de UV.
 
 | Alternativa             | Por que não                                     |
 | ----------------------- | ----------------------------------------------- |
@@ -519,12 +525,14 @@ Fatores favoráveis compõem a frase principal ("Temperatura agradável, baixa c
 
 Cada card traz **2–3 sugestões** (como chaves de tradução, ver 013) escolhidas por uma **tabela fixa** (período × condição dominante da janela), em `src/recommendation/suggestions.ts`. São **dados, não lógica**: adicionar uma sugestão é adicionar uma linha. A escolha é **determinística**, para manter os testes previsíveis.
 
-| Condição  | Dia                                          | Noite                                                 |
-| --------- | -------------------------------------------- | ----------------------------------------------------- |
-| Agradável | caminhada no parque, corrida, piquenique     | barzinho com mesa na calçada, jantar ao ar livre      |
-| Quente    | praia ou piscina, sorvete, passeio na sombra | barzinho, açaí, caminhada na orla                     |
-| Frio      | caminhada ao sol, café com vista             | restaurante de sopa, fondue, chocolate quente em casa |
-| Chuva     | cinema, museu, café                          | filme em casa, restaurante aconchegante               |
+**Condição dominante:** janela com rótulo **"Evite" → atividades em ambiente fechado** (`indoor`). Senão, decide a temperatura: frio → frio, quente ou muito quente → quente, o resto → agradável. A versão inicial olhava só os fatores ("chuva provável → chuva") e falhava nos dois sentidos: 45% de chuva dá "Evite" mas sugeria parque, e uma noite fria com rótulo "Bom" sugeria ficar em casa. Ligar a sugestão ao rótulo garante a regra abaixo por construção. Chuva provável ou tempestade já levam qualquer janela a "Evite", então nenhum caso de chuva se perde.
+
+| Condição  | Dia                                          | Noite                                              |
+| --------- | -------------------------------------------- | -------------------------------------------------- |
+| Agradável | caminhada no parque, corrida, piquenique     | barzinho com mesa na calçada, jantar ao ar livre   |
+| Quente    | praia ou piscina, sorvete, passeio na sombra | barzinho, açaí, caminhada na orla                  |
+| Frio      | caminhada ao sol, café com vista             | restaurante de sopa, fondue, chocolate quente fora |
+| Evite     | cinema, museu, café                          | filme em casa, restaurante aconchegante            |
 
 **Motivo:** transforma o estado negativo ("Evite") em algo útil, e o pior cenário do app vira uma recomendação. Sugestões de "ficar em casa" só aparecem quando sair não é uma boa ideia, mantendo o foco do enunciado (atividade ao ar livre).
 
@@ -555,6 +563,24 @@ recommend(forecast: Forecast, now: CityLocalTime): Recommendation
 ```
 
 Isso deixa os testes **determinísticos** ("às 15h, com estes dados, a resposta é X"), independentes do relógio de quando rodam. Todos os parâmetros (faixas, pesos, limiares, tamanho da janela) ficam em `src/recommendation/config.ts`.
+
+### 9.10 Regras de borda adotadas na implementação
+
+A 009 não especificava estes casos. Cada regra tem um teste em `src/recommendation/`.
+
+| Caso                                   | Regra                                                                                                                                         |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hora que contém o pôr do sol           | É **dia** se começa antes do pôr do sol (pôr às 18:06 → a hora das 18h é dia, a noite começa às 19h).                                         |
+| Madrugada antes do nascer do sol       | O dia começa na hora que contém o nascer do sol (nascer às 05:24 → 5h). Às 3h, o card do dia não recomenda 3h ou 4h, que ainda estão escuras. |
+| Fim da noite                           | Horas que **começam** antes das 02h: a última é a das 01h.                                                                                    |
+| Empate de score                        | Vence a hora mais cedo. Na expansão da janela, cresce primeiro para o vizinho de score maior.                                                 |
+| Resumo dos fatores da janela           | Temperatura pela **média**. Chuva, vento e UV pelo **pior valor**: uma hora com 60% de chuva na janela precisa aparecer no motivo.            |
+| Score da janela                        | Média dos scores das horas, arredondada.                                                                                                      |
+| Condição dominante (para as sugestões) | Rótulo "Evite" → ambiente fechado. Senão: frio → frio, quente ou muito quente → quente, o resto → agradável (ver 9.7).                        |
+| Data de hoje ausente da previsão       | Nenhum período (cache antigo ao voltar do segundo plano no dia seguinte). Nunca trata um dia passado como "amanhã".                           |
+| "Melhor do dia"                        | O período de maior score. Empate → dia (a pergunta do enunciado).                                                                             |
+
+**Validação com dados reais:** com a previsão de Ubatuba para 19/10/2026 (manhã com 47–71% de chuva, tarde seca), às 9h o algoritmo recomenda "12h–16h, Ótimo" e evita a manhã chuvosa.
 
 ### Valores adotados por padrão (ajustáveis)
 
