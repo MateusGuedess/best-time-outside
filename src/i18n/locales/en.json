@@ -1,0 +1,21 @@
+{
+  "search": {
+    "title": "Best time to go out",
+    "placeholder": "Search for a city",
+    "clear": "Clear search",
+    "intro": "Type a city name to find the best time to go out today.",
+    "recent": "Recent searches",
+    "noResults": "No cities found for “{{term}}”.",
+    "loading": "Searching cities…"
+  },
+  "city": {
+    "loading": "Loading…",
+    "notFound": "City not found."
+  },
+  "errors": {
+    "network": "No connection. Check your internet.",
+    "server": "The weather service is unstable. Please try again.",
+    "generic": "Something went wrong while loading.",
+    "retry": "Try again"
+  }
+}

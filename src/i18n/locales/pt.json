@@ -1,0 +1,21 @@
+{
+  "search": {
+    "title": "Melhor hora para sair",
+    "placeholder": "Buscar cidade",
+    "clear": "Limpar busca",
+    "intro": "Digite o nome de uma cidade para descobrir o melhor horário para sair hoje.",
+    "recent": "Buscas recentes",
+    "noResults": "Nenhuma cidade encontrada para “{{term}}”.",
+    "loading": "Buscando cidades…"
+  },
+  "city": {
+    "loading": "Carregando…",
+    "notFound": "Cidade não encontrada."
+  },
+  "errors": {
+    "network": "Sem conexão. Verifique sua internet.",
+    "server": "O serviço de clima está instável. Tente novamente.",
+    "generic": "Não foi possível carregar.",
+    "retry": "Tentar novamente"
+  }
+}
