@@ -1,5 +1,5 @@
 import { factorRanges } from "./config";
-import { scoreHour, trapezoid } from "./score";
+import { explainHour, scoreHour, trapezoid } from "./score";
 
 import { hourAt } from "@/test/forecastFactory";
 
@@ -61,5 +61,39 @@ describe("scoreHour", () => {
 
     expect(scoreHour(highUv, "day").score).toBeCloseTo(80);
     expect(scoreHour(highUv, "night").score).toBeCloseTo(100);
+  });
+});
+
+describe("explainHour", () => {
+  it("shows each step that leads to the score", () => {
+    const hour = hourAt("2026-10-18", 15, {
+      apparentTemperature: 30,
+      windSpeed: 35,
+      uvIndex: 8,
+      precipitationProbability: 40,
+    });
+
+    const breakdown = explainHour(hour, "day");
+
+    expect(breakdown.temperature).toEqual({ value: 30, grade: 0.5, weight: 0.55 });
+    expect(breakdown.wind.grade).toBeCloseTo(0.2);
+    expect(breakdown.uv.grade).toBeCloseTo(0.5);
+    expect(breakdown.comfort).toBeCloseTo(0.55 * 0.5 + 0.25 * 0.2 + 0.2 * 0.5);
+    expect(breakdown.rain.factor).toBeCloseTo(0.5);
+    expect(breakdown.strongWind.factor).toBeCloseTo(0.75);
+    expect(breakdown.score).toBeCloseTo(breakdown.comfort * 0.5 * 0.75 * 100);
+    expect(breakdown.score).toBeCloseTo(scoreHour(hour, "day").score);
+  });
+
+  it("gives UV no weight at night", () => {
+    expect(explainHour(hourAt("2026-10-18", 21), "night").uv.weight).toBe(0);
+  });
+
+  it("keeps the comfort but zeroes the score in a storm", () => {
+    const breakdown = explainHour(hourAt("2026-10-18", 15, { weatherCode: 95 }), "day");
+
+    expect(breakdown.storm).toBe(true);
+    expect(breakdown.comfort).toBeCloseTo(1);
+    expect(breakdown.score).toBe(0);
   });
 });

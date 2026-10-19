@@ -18,47 +18,109 @@
     "generic": "Something went wrong while loading.",
     "retry": "Try again"
   },
-  "suggestions": {
-    "day": {
-      "pleasant": {
-        "park": "Walk in the park",
-        "run": "Go for a run",
-        "picnic": "Picnic"
-      },
-      "hot": {
-        "beach": "Beach or pool",
-        "iceCream": "Ice cream",
-        "shadeWalk": "Walk in the shade"
-      },
-      "cold": {
-        "sunWalk": "Walk in the sun",
-        "viewCafe": "Café with a view"
-      },
-      "indoor": {
-        "cinema": "Movie theater",
-        "museum": "Museum",
-        "cafe": "Café"
-      }
+  "recommendation": {
+    "period": {
+      "day": "During the day",
+      "night": "Tonight"
     },
-    "night": {
-      "pleasant": {
-        "sidewalkBar": "Bar with sidewalk tables",
-        "outdoorDinner": "Outdoor dinner"
-      },
-      "hot": {
-        "bar": "Bar",
-        "acai": "Açaí",
-        "boardwalk": "Walk along the waterfront"
-      },
-      "cold": {
-        "soupRestaurant": "Soup restaurant",
-        "fondue": "Fondue",
-        "hotChocolate": "Hot chocolate at a café"
-      },
-      "indoor": {
-        "movieAtHome": "Movie at home",
-        "cozyRestaurant": "Cozy restaurant"
-      }
-    }
+    "tomorrow": "Tomorrow",
+    "best": "Best of the day",
+    "between": "Between {{from}} and {{to}}",
+    "at": "At {{hour}}",
+    "sunset": "Includes the sunset ({{time}})",
+    "feelsLike": "Feels like {{value}} {{unit}}",
+    "inWindow": "{{hour}}, recommended",
+    "page": "Page {{current}} of {{total}}",
+    "badDay": "Today is not a good day to go out. Here are some ideas.",
+    "why": "Why",
+    "ideas": "Ideas",
+    "cityTime": "Times in {{city}} (now {{time}})",
+    "empty": "There is no forecast left for today in this city.",
+    "back": "Back"
+  },
+  "rating": {
+    "great": "Great",
+    "good": "Good",
+    "avoid": "Avoid"
+  },
+  "factors": {
+    "temperature": {
+      "cold": "Cold",
+      "cool": "Cool",
+      "pleasant": "Pleasant temperature",
+      "warm": "Warm",
+      "hot": "Very hot"
+    },
+    "rain": {
+      "low": "Low chance of rain",
+      "possible": "Chance of rain",
+      "likely": "Rain likely"
+    },
+    "wind": {
+      "light": "Light wind",
+      "breezy": "Breezy",
+      "strong": "Strong wind"
+    },
+    "storm": "Risk of thunderstorm",
+    "uvAlert": "Very high UV, wear sunscreen"
+  },
+  "units": {
+    "celsius": "degrees Celsius",
+    "fahrenheit": "degrees Fahrenheit",
+    "kmh": "km/h",
+    "mph": "mph"
+  },
+  "hourDetails": {
+    "score": "Score {{score}} out of 100",
+    "inWindow": "Inside the recommended time",
+    "outWindow": "Outside the recommended time",
+    "feelsLike": "Feels like",
+    "wind": "Wind",
+    "uv": "UV index",
+    "comfort": "Comfort",
+    "rain": "Chance of rain",
+    "strongWind": "Gale",
+    "storm": "Thunderstorm",
+    "final": "Final score",
+    "weighted": "grade {{grade}}% · weight {{weight}}%",
+    "notCounted": "not counted at night",
+    "multiplier": "multiplies by {{factor}}",
+    "stormYes": "yes, hour discarded",
+    "stormNo": "no",
+    "formula": "Comfort (temperature, wind and UV) × rain × gale. A thunderstorm sets the score to zero.",
+    "hint": "Shows how this hour was scored",
+    "close": "Close"
+  },
+  "activities": {
+    "park": "Walk in the park",
+    "run": "Go for a run",
+    "bikeRide": "Bike ride",
+    "picnic": "Picnic",
+    "earlyBeach": "Beach early, before the strong sun",
+    "shadeWalk": "Walk in the shade",
+    "streetMarket": "Street market",
+    "sunWalk": "Walk in the sun",
+    "bakeryBreakfast": "Breakfast at a bakery",
+    "gym": "Gym",
+    "cityMarket": "Covered food market",
+    "beach": "Beach or pool",
+    "iceCream": "Ice cream",
+    "viewCafe": "Café with a view",
+    "cinema": "Movie theater",
+    "museum": "Museum",
+    "cafe": "Café",
+    "sidewalkBar": "Bar with sidewalk tables",
+    "outdoorDinner": "Outdoor dinner",
+    "bar": "Bar",
+    "acai": "Açaí",
+    "boardwalk": "Walk along the waterfront",
+    "soupRestaurant": "Soup restaurant",
+    "fondue": "Fondue",
+    "hotChocolate": "Hot chocolate at a café",
+    "cozyRestaurant": "Cozy restaurant",
+    "liveMusic": "Bar with live music",
+    "cozyBar": "Cozy bar",
+    "movieAtHome": "Movie at home",
+    "deliveryDinner": "Order dinner in"
   }
 }

@@ -6,11 +6,11 @@ import type {
   ScoredHour,
 } from "@/types/recommendation";
 
-import { describeFactors, dominantCondition, rate, windowScore } from "./describe";
+import { average, describeFactors, dominantCondition, rate, windowScore } from "./describe";
 import { addHours, isWithin, toMinutes } from "./localTime";
 import { selectPeriods } from "./periods";
 import { scoreHour } from "./score";
-import { suggestionsFor } from "./suggestions";
+import { suggestionsFor, timeOfDay } from "./suggestions";
 import { findWindow } from "./window";
 
 type PeriodInput = {
@@ -46,9 +46,10 @@ function recommendPeriod({
     candidates: pool.slice(0, candidates),
     score,
     rating,
+    feelsLike: average(hours.map(({ apparentTemperature }) => apparentTemperature)),
     factors,
     condition,
-    suggestions: suggestionsFor(period, condition),
+    suggestions: suggestionsFor(timeOfDay(from), condition),
     sunset: sunset && isWithin(sunset, from, to) ? sunset : null,
   };
 }

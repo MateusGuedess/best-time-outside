@@ -25,10 +25,11 @@ describe("recommend", () => {
 
     expect(span(day)).toBe("15h–19h");
     expect(day?.rating).toBe("great");
+    expect(day?.feelsLike).toBe(22);
     expect(day?.factors).toMatchObject({ temperature: "pleasant", rain: "low", wind: "light" });
     expect(night?.rating).toBe("avoid");
     expect(night?.condition).toBe("indoor");
-    expect(night?.suggestions).toContain("suggestions.night.indoor.movieAtHome");
+    expect(night?.suggestions).toContain("activities.cinema");
     expect(best).toBe("day");
     expect(isBadDay).toBe(false);
   });
@@ -61,7 +62,7 @@ describe("recommend", () => {
     expect(day?.rating).toBe("avoid");
     expect(night?.rating).toBe("avoid");
     expect(isBadDay).toBe(true);
-    expect(day?.suggestions).toContain("suggestions.day.indoor.cinema");
+    expect(day?.suggestions).toContain("activities.bakeryBreakfast");
   });
 
   it("suggests indoor activities whenever the window should be avoided, even without likely rain", () => {
@@ -72,7 +73,7 @@ describe("recommend", () => {
     expect(day?.factors.rain).toBe("possible");
     expect(day?.rating).toBe("avoid");
     expect(day?.condition).toBe("indoor");
-    expect(day?.suggestions).toContain("suggestions.day.indoor.museum");
+    expect(day?.suggestions).toContain("activities.bakeryBreakfast");
   });
 
   it("shows tomorrow's daylight once today's is over", () => {

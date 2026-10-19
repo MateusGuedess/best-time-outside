@@ -1,45 +1,53 @@
-import type { Condition, Period } from "@/types/recommendation";
+import type { LocalDateTime } from "@/types/forecast";
+import type { Condition } from "@/types/recommendation";
+
+export type TimeOfDay = "morning" | "afternoon" | "evening" | "late";
+
+const MORNING_FROM = 5;
+const AFTERNOON_FROM = 12;
+const EVENING_FROM = 18;
+const LATE_FROM = 22;
 
 const suggestionTable = {
-  day: {
-    pleasant: [
-      "suggestions.day.pleasant.park",
-      "suggestions.day.pleasant.run",
-      "suggestions.day.pleasant.picnic",
-    ],
-    hot: [
-      "suggestions.day.hot.beach",
-      "suggestions.day.hot.iceCream",
-      "suggestions.day.hot.shadeWalk",
-    ],
-    cold: ["suggestions.day.cold.sunWalk", "suggestions.day.cold.viewCafe"],
-    indoor: [
-      "suggestions.day.indoor.cinema",
-      "suggestions.day.indoor.museum",
-      "suggestions.day.indoor.cafe",
-    ],
+  morning: {
+    pleasant: ["park", "run", "bikeRide"],
+    hot: ["earlyBeach", "shadeWalk", "streetMarket"],
+    cold: ["sunWalk", "bakeryBreakfast"],
+    indoor: ["bakeryBreakfast", "gym", "cityMarket"],
   },
-  night: {
-    pleasant: [
-      "suggestions.night.pleasant.sidewalkBar",
-      "suggestions.night.pleasant.outdoorDinner",
-    ],
-    hot: [
-      "suggestions.night.hot.bar",
-      "suggestions.night.hot.acai",
-      "suggestions.night.hot.boardwalk",
-    ],
-    cold: [
-      "suggestions.night.cold.soupRestaurant",
-      "suggestions.night.cold.fondue",
-      "suggestions.night.cold.hotChocolate",
-    ],
-    indoor: ["suggestions.night.indoor.movieAtHome", "suggestions.night.indoor.cozyRestaurant"],
+  afternoon: {
+    pleasant: ["park", "picnic", "bikeRide"],
+    hot: ["beach", "iceCream", "shadeWalk"],
+    cold: ["sunWalk", "viewCafe"],
+    indoor: ["cinema", "museum", "cafe"],
   },
-} as const satisfies Record<Period, Record<Condition, readonly `suggestions.${string}`[]>>;
+  evening: {
+    pleasant: ["sidewalkBar", "outdoorDinner"],
+    hot: ["bar", "acai", "boardwalk"],
+    cold: ["soupRestaurant", "fondue", "hotChocolate"],
+    indoor: ["cinema", "cozyRestaurant"],
+  },
+  late: {
+    pleasant: ["sidewalkBar", "liveMusic"],
+    hot: ["bar", "boardwalk"],
+    cold: ["cozyBar", "liveMusic"],
+    indoor: ["movieAtHome", "deliveryDinner"],
+  },
+} as const satisfies Record<TimeOfDay, Record<Condition, readonly string[]>>;
 
-export type SuggestionKey = (typeof suggestionTable)[Period][Condition][number];
+export type Activity = (typeof suggestionTable)[TimeOfDay][Condition][number];
 
-export function suggestionsFor(period: Period, condition: Condition): SuggestionKey[] {
-  return [...suggestionTable[period][condition]];
+export type SuggestionKey = `activities.${Activity}`;
+
+export function timeOfDay({ hour }: LocalDateTime): TimeOfDay {
+  if (hour >= MORNING_FROM && hour < AFTERNOON_FROM) return "morning";
+  if (hour >= AFTERNOON_FROM && hour < EVENING_FROM) return "afternoon";
+  if (hour >= EVENING_FROM && hour < LATE_FROM) return "evening";
+  return "late";
+}
+
+export function suggestionsFor(time: TimeOfDay, condition: Condition): SuggestionKey[] {
+  return suggestionTable[time][condition].map(
+    (activity): SuggestionKey => `activities.${activity}`,
+  );
 }

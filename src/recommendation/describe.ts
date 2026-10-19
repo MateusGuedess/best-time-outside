@@ -11,7 +11,7 @@ import type {
 import { levelThresholds, ratingThresholds } from "./config";
 import { isStorm } from "./score";
 
-function average(values: readonly number[]): number {
+export function average(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 

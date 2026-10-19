@@ -18,47 +18,109 @@
     "generic": "Não foi possível carregar.",
     "retry": "Tentar novamente"
   },
-  "suggestions": {
-    "day": {
-      "pleasant": {
-        "park": "Caminhada no parque",
-        "run": "Corrida",
-        "picnic": "Piquenique"
-      },
-      "hot": {
-        "beach": "Praia ou piscina",
-        "iceCream": "Sorvete",
-        "shadeWalk": "Passeio na sombra"
-      },
-      "cold": {
-        "sunWalk": "Caminhada ao sol",
-        "viewCafe": "Café com vista"
-      },
-      "indoor": {
-        "cinema": "Cinema",
-        "museum": "Museu",
-        "cafe": "Café"
-      }
+  "recommendation": {
+    "period": {
+      "day": "Durante o dia",
+      "night": "À noite"
     },
-    "night": {
-      "pleasant": {
-        "sidewalkBar": "Barzinho com mesa na calçada",
-        "outdoorDinner": "Jantar ao ar livre"
-      },
-      "hot": {
-        "bar": "Barzinho",
-        "acai": "Açaí",
-        "boardwalk": "Caminhada na orla"
-      },
-      "cold": {
-        "soupRestaurant": "Restaurante de sopa",
-        "fondue": "Fondue",
-        "hotChocolate": "Chocolate quente numa cafeteria"
-      },
-      "indoor": {
-        "movieAtHome": "Filme em casa",
-        "cozyRestaurant": "Restaurante aconchegante"
-      }
-    }
+    "tomorrow": "Amanhã",
+    "best": "Melhor do dia",
+    "between": "Entre {{from}} e {{to}}",
+    "at": "Às {{hour}}",
+    "sunset": "Inclui o pôr do sol ({{time}})",
+    "feelsLike": "Sensação térmica de {{value}} {{unit}}",
+    "inWindow": "{{hour}}, horário recomendado",
+    "page": "Página {{current}} de {{total}}",
+    "badDay": "Hoje não está um bom dia para sair. Veja algumas ideias abaixo.",
+    "why": "Por quê",
+    "ideas": "Ideias",
+    "cityTime": "Horários de {{city}} (agora {{time}})",
+    "empty": "Não há mais previsão para hoje nesta cidade.",
+    "back": "Voltar"
+  },
+  "rating": {
+    "great": "Ótimo",
+    "good": "Bom",
+    "avoid": "Evite"
+  },
+  "factors": {
+    "temperature": {
+      "cold": "Frio",
+      "cool": "Fresco",
+      "pleasant": "Temperatura agradável",
+      "warm": "Quente",
+      "hot": "Muito quente"
+    },
+    "rain": {
+      "low": "Baixa chance de chuva",
+      "possible": "Possibilidade de chuva",
+      "likely": "Chuva provável"
+    },
+    "wind": {
+      "light": "Vento leve",
+      "breezy": "Ventando",
+      "strong": "Vento forte"
+    },
+    "storm": "Risco de tempestade",
+    "uvAlert": "UV muito alto, use protetor solar"
+  },
+  "units": {
+    "celsius": "graus Celsius",
+    "fahrenheit": "graus Fahrenheit",
+    "kmh": "km/h",
+    "mph": "mph"
+  },
+  "hourDetails": {
+    "score": "Nota {{score}} de 100",
+    "inWindow": "Dentro do horário recomendado",
+    "outWindow": "Fora do horário recomendado",
+    "feelsLike": "Sensação térmica",
+    "wind": "Vento",
+    "uv": "Índice UV",
+    "comfort": "Conforto",
+    "rain": "Chance de chuva",
+    "strongWind": "Ventania",
+    "storm": "Tempestade",
+    "final": "Nota final",
+    "weighted": "nota {{grade}}% · peso {{weight}}%",
+    "notCounted": "não conta à noite",
+    "multiplier": "multiplica por {{factor}}",
+    "stormYes": "sim, hora descartada",
+    "stormNo": "não",
+    "formula": "Conforto (temperatura, vento e UV) × chuva × ventania. Tempestade zera a nota.",
+    "hint": "Mostra como a nota desta hora foi calculada",
+    "close": "Fechar"
+  },
+  "activities": {
+    "park": "Caminhada no parque",
+    "run": "Corrida",
+    "bikeRide": "Passeio de bicicleta",
+    "picnic": "Piquenique",
+    "earlyBeach": "Praia cedo, antes do sol forte",
+    "shadeWalk": "Passeio na sombra",
+    "streetMarket": "Feira de rua",
+    "sunWalk": "Caminhada ao sol",
+    "bakeryBreakfast": "Café da manhã na padaria",
+    "gym": "Academia",
+    "cityMarket": "Mercado municipal",
+    "beach": "Praia ou piscina",
+    "iceCream": "Sorvete",
+    "viewCafe": "Café com vista",
+    "cinema": "Cinema",
+    "museum": "Museu",
+    "cafe": "Café",
+    "sidewalkBar": "Barzinho com mesa na calçada",
+    "outdoorDinner": "Jantar ao ar livre",
+    "bar": "Barzinho",
+    "acai": "Açaí",
+    "boardwalk": "Caminhada na orla",
+    "soupRestaurant": "Restaurante de sopa",
+    "fondue": "Fondue",
+    "hotChocolate": "Chocolate quente numa cafeteria",
+    "cozyRestaurant": "Restaurante aconchegante",
+    "liveMusic": "Bar com música ao vivo",
+    "cozyBar": "Bar aconchegante",
+    "movieAtHome": "Filme em casa",
+    "deliveryDinner": "Pedir um jantar em casa"
   }
 }

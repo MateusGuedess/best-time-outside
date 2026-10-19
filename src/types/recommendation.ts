@@ -36,6 +36,7 @@ export type PeriodRecommendation = {
   candidates: ScoredHour[];
   score: number;
   rating: Rating;
+  feelsLike: number;
   factors: WindowFactors;
   condition: Condition;
   suggestions: SuggestionKey[];

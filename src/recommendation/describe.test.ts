@@ -98,9 +98,9 @@ describe("dominantCondition and suggestions", () => {
   });
 
   it("returns translation keys from a fixed table", () => {
-    expect(suggestionsFor("night", "indoor")).toEqual([
-      "suggestions.night.indoor.movieAtHome",
-      "suggestions.night.indoor.cozyRestaurant",
+    expect(suggestionsFor("late", "indoor")).toEqual([
+      "activities.movieAtHome",
+      "activities.deliveryDinner",
     ]);
   });
 });
