@@ -11,13 +11,17 @@ import {
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useAssets } from "expo-asset";
 import { Stack } from "expo-router";
-import { useState } from "react";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
 
 import { useAppStateFocus } from "@/hooks/useAppStateFocus";
 import { useDeviceLanguageSync } from "@/hooks/useDeviceLanguageSync";
 import { createQueryClient } from "@/services/queryClient";
 import { PeriodTheme, usePalette } from "@/theme/PeriodTheme";
 import { PAPER_TEXTURE } from "@/theme/textures";
+
+void SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({ fade: true, duration: 300 });
 
 export default function RootLayout() {
   const [queryClient] = useState(createQueryClient);
@@ -34,7 +38,13 @@ export default function RootLayout() {
 
   const fontsReady = fontsLoaded || fontError;
   const texturesReady = textures || textureError;
-  if (!fontsReady || !texturesReady) return null;
+  const isReady = Boolean(fontsReady && texturesReady);
+
+  useEffect(() => {
+    if (isReady) void SplashScreen.hideAsync();
+  }, [isReady]);
+
+  if (!isReady) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
