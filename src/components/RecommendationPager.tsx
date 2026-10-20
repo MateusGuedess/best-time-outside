@@ -19,12 +19,14 @@ import { PeriodPage } from "./PeriodPage";
 type RecommendationPagerProps = {
   recommendation: Recommendation;
   cityName: string;
+  cityLocation: string;
   cityTimeNote: string | null;
 };
 
 export function RecommendationPager({
   recommendation,
   cityName,
+  cityLocation,
   cityTimeNote,
 }: RecommendationPagerProps) {
   const { width } = useWindowDimensions();
@@ -49,6 +51,7 @@ export function RecommendationPager({
     <PeriodPage
       recommendation={item}
       cityName={cityName}
+      cityLocation={cityLocation}
       cityTimeNote={cityTimeNote}
       isBest={pages.length > 1 && item.period === recommendation.best}
       isBadDay={recommendation.isBadDay}

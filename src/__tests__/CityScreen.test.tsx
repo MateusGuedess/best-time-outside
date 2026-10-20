@@ -74,6 +74,15 @@ describe("CityScreen", () => {
     expect(screen.getByText("Restaurante aconchegante")).toBeOnTheScreen();
   });
 
+  it("shows the region and country so homonymous cities are told apart", async () => {
+    getForecastMock.mockResolvedValue(twoDayForecast(() => ({})));
+
+    await renderCity();
+
+    await screen.findByText("Durante o dia");
+    expect(screen.getAllByText("São Paulo, Brasil").length).toBeGreaterThan(0);
+  });
+
   it("scrolls the hours sideways on every page", async () => {
     getForecastMock.mockResolvedValue(twoDayForecast());
 

@@ -2,6 +2,7 @@ import { Pressable, View } from "react-native";
 
 import type { City } from "@/types/city";
 
+import { cityLocation } from "./cityLocation";
 import { Text } from "./ui/Text";
 
 const REGIONAL_INDICATOR_A = 0x1f1e6;
@@ -18,7 +19,7 @@ type CityListItemProps = {
 };
 
 export function CityListItem({ city, onPress }: CityListItemProps) {
-  const location = [city.region, city.country].filter(Boolean).join(", ");
+  const location = cityLocation(city);
 
   return (
     <Pressable

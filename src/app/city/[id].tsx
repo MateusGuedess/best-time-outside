@@ -5,6 +5,7 @@ import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BackButton } from "@/components/BackButton";
+import { cityLocation } from "@/components/cityLocation";
 import { RecommendationPager } from "@/components/RecommendationPager";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -20,6 +21,7 @@ import { cityNow } from "@/recommendation/localTime";
 import { recommend } from "@/recommendation/recommend";
 import { HttpError } from "@/services/http";
 import { usePeriodColors } from "@/theme/PeriodTheme";
+import type { City } from "@/types/city";
 import type { Forecast } from "@/types/forecast";
 
 function isNotFound(error: unknown): boolean {
@@ -49,7 +51,7 @@ function CityStatus({ cityName, children }: { cityName?: string; children: React
   );
 }
 
-function CityForecast({ cityName, forecast }: { cityName: string; forecast: Forecast }) {
+function CityForecast({ city, forecast }: { city: City; forecast: Forecast }) {
   const { t } = useTranslation();
   const language = useLanguage();
   const epochMs = useNow();
@@ -58,6 +60,7 @@ function CityForecast({ cityName, forecast }: { cityName: string; forecast: Fore
     () => recommend(forecast, { date: now.date, hour: now.hour, minute: 0 }),
     [forecast, now.date, now.hour],
   );
+  const cityName = city.name;
   const cityTimeNote =
     forecast.utcOffsetSeconds === deviceUtcOffsetSeconds(epochMs)
       ? null
@@ -75,6 +78,7 @@ function CityForecast({ cityName, forecast }: { cityName: string; forecast: Fore
     <RecommendationPager
       recommendation={recommendation}
       cityName={cityName}
+      cityLocation={cityLocation(city)}
       cityTimeNote={cityTimeNote}
     />
   );
@@ -111,14 +115,14 @@ export default function CityScreen() {
         </CityStatus>
       );
     }
-    if (!cityName || !forecast.data) {
+    if (!city.data || !forecast.data) {
       return (
         <CityStatus cityName={cityName}>
           <EmptyState message={t("city.loading")} isLoading />
         </CityStatus>
       );
     }
-    return <CityForecast cityName={cityName} forecast={forecast.data} />;
+    return <CityForecast city={city.data} forecast={forecast.data} />;
   };
 
   return (

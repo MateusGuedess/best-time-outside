@@ -20,6 +20,7 @@ import { WeatherScene } from "./WeatherScene";
 type PeriodPageProps = {
   recommendation: PeriodRecommendation;
   cityName: string;
+  cityLocation: string;
   cityTimeNote: string | null;
   isBest: boolean;
   isBadDay: boolean;
@@ -30,6 +31,7 @@ type PeriodPageProps = {
 export function PeriodPage({
   recommendation,
   cityName,
+  cityLocation,
   cityTimeNote,
   isBest,
   isBadDay,
@@ -152,6 +154,7 @@ export function PeriodPage({
 
           <View className="items-center gap-1">
             <Text variant="label">{cityName}</Text>
+            {cityLocation !== "" && <Text variant="caption">{cityLocation}</Text>}
             {cityTimeNote && <Text variant="caption">{cityTimeNote}</Text>}
           </View>
 
