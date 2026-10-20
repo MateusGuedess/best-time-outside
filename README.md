@@ -140,9 +140,32 @@ O formato da Open-Meteo não sai de `schemas/`: o resto do app só usa os tipos 
 
 ## Próximos passos
 
-- Usar a localização atual como ponto de partida.
-- Escolher a atividade (correr, pedalar, caminhar) e ajustar os pesos para ela.
-- Testes E2E (Maestro) do fluxo principal.
+<img src="docs/images/next-steps-mockup.png" alt="Rascunho das telas: home com localização, cadastro de atividade e plano da semana" />
+
+### Home com a localização atual
+
+A home teria o mesmo visual da recomendação, desfocado (`expo-blur`) sobre uma previsão de exemplo embutida no app, com um botão central **"Ver minha localização"**. A permissão só seria pedida nesse toque, nunca na abertura do app.
+
+- **Permissão concedida:** `expo-location` pega as coordenadas, `reverseGeocodeAsync` dá o nome da cidade e a tela vira a recomendação real. A busca continua acessível por um ícone.
+- **Permissão negada:** o app explica o motivo, oferece abrir os Ajustes e leva para a busca.
+
+### Plano semanal das suas atividades
+
+O usuário cadastra as atividades da rotina com nome, duração, frequência (todo dia, ou a cada _x_ dias) e uma janela opcional (por exemplo, "só antes das 9h"). Todo domingo, no começo do dia e no fuso do usuário, um job monta a semana:
+
+1. Busca a previsão horária dos próximos 7 dias na Open-Meteo (`forecast_days=7`).
+2. Para cada dia em que a atividade cai, roda o mesmo algoritmo de pontuação de hoje, mas procurando a melhor janela contínua com a duração da atividade. Os pesos mudam por atividade: corrida pesa mais calor e UV, ciclismo pesa mais vento.
+3. Envia uma notificação push com o plano (_"Corrida: terça 7h–8h, quinta 18h–19h"_) e o mostra numa tela de agenda.
+
+Decisões que isso pede:
+
+- **Onde roda o job:** num backend com cron e push via Expo Notifications. Tarefa em segundo plano no próprio aparelho não serve aqui, porque o iOS não garante quando ela executa.
+- **Reaproveitamento:** o algoritmo já é uma função pura (`recommend(forecast, agora)`). Ele vai para um pacote compartilhado entre o app e o backend.
+- **Previsão envelhece:** a previsão de 7 dias erra mais do que a de hoje. Por isso o plano seria recalculado todo dia, e o usuário seria avisado só quando o horário de alguma atividade mudar.
+
+### Testes de ponta a ponta
+
+Hoje os testes de tela rodam no Jest, com o ambiente nativo simulado. O próximo nível é testar o app de verdade num emulador com [Maestro](https://maestro.mobile.dev/): buscar uma cidade, abrir a recomendação, alternar entre dia e noite e abrir o detalhe de uma hora.
 
 ## Créditos
 
