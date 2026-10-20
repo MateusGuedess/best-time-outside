@@ -91,15 +91,15 @@ export function HourDetails({ hour, inWindow, onClose }: HourDetailsProps) {
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
-        onPress={onClose}
-        accessibilityRole="button"
-        accessibilityLabel={t("hourDetails.close")}
-        className="flex-1 justify-end bg-black/40"
-      >
+      <View className="flex-1 justify-end">
+        <Pressable
+          onPress={onClose}
+          accessibilityRole="button"
+          accessibilityLabel={t("hourDetails.close")}
+          className="absolute inset-0 bg-black/40"
+        />
         <PeriodTheme period={hour.period}>
           <View
-            onStartShouldSetResponder={() => true}
             accessibilityViewIsModal
             className="overflow-hidden rounded-t-3xl bg-background px-6 pt-6"
             style={{ paddingBottom: insets.bottom + 16 }}
@@ -175,7 +175,7 @@ export function HourDetails({ hour, inWindow, onClose }: HourDetailsProps) {
             <PaperTexture />
           </View>
         </PeriodTheme>
-      </Pressable>
+      </View>
     </Modal>
   );
 }
