@@ -49,7 +49,7 @@ function recommendPeriod({
     feelsLike: average(hours.map(({ apparentTemperature }) => apparentTemperature)),
     factors,
     condition,
-    suggestions: suggestionsFor(timeOfDay(from), condition),
+    suggestions: suggestionsFor(timeOfDay(from, period), condition),
     sunset: sunset && isWithin(sunset, from, to) ? sunset : null,
   };
 }

@@ -1,5 +1,5 @@
 import type { LocalDateTime } from "@/types/forecast";
-import type { Condition } from "@/types/recommendation";
+import type { Condition, Period } from "@/types/recommendation";
 
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "late";
 
@@ -39,11 +39,11 @@ export type Activity = (typeof suggestionTable)[TimeOfDay][Condition][number];
 
 export type SuggestionKey = `activities.${Activity}`;
 
-export function timeOfDay({ hour }: LocalDateTime): TimeOfDay {
-  if (hour >= MORNING_FROM && hour < AFTERNOON_FROM) return "morning";
-  if (hour >= AFTERNOON_FROM && hour < EVENING_FROM) return "afternoon";
-  if (hour >= EVENING_FROM && hour < LATE_FROM) return "evening";
-  return "late";
+export function timeOfDay({ hour }: LocalDateTime, period: Period): TimeOfDay {
+  if (period === "night") return hour >= LATE_FROM || hour < MORNING_FROM ? "late" : "evening";
+  if (hour < AFTERNOON_FROM) return "morning";
+  if (hour < EVENING_FROM) return "afternoon";
+  return "evening";
 }
 
 export function suggestionsFor(time: TimeOfDay, condition: Condition): SuggestionKey[] {

@@ -21,18 +21,32 @@ function translationAt(key: string): unknown {
 
 describe("timeOfDay", () => {
   it.each([
-    [5, "morning"],
+    [4, "morning"],
     [7, "morning"],
     [11, "morning"],
     [12, "afternoon"],
     [17, "afternoon"],
     [18, "evening"],
+    [20, "evening"],
+  ] as const)("a day window starting at %sh is in the %s", (hour, expected) => {
+    expect(timeOfDay(at("2026-10-19", hour), "day")).toBe(expected);
+  });
+
+  it.each([
+    [17, "evening"],
+    [18, "evening"],
     [21, "evening"],
     [22, "late"],
     [1, "late"],
     [4, "late"],
-  ] as const)("a window starting at %sh is in the %s", (hour, expected) => {
-    expect(timeOfDay(at("2026-10-19", hour))).toBe(expected);
+  ] as const)("a night window starting at %sh is in the %s", (hour, expected) => {
+    expect(timeOfDay(at("2026-10-19", hour), "night")).toBe(expected);
+  });
+
+  it("never suggests afternoon activities after an early sunset", () => {
+    expect(suggestionsFor(timeOfDay(at("2026-12-21", 17), "night"), "pleasant")).not.toContain(
+      "activities.picnic",
+    );
   });
 });
 
@@ -48,7 +62,7 @@ describe("suggestionsFor", () => {
   });
 
   it("only suggests places that are open early on a rainy morning", () => {
-    const keys = suggestionsFor(timeOfDay(at("2026-10-19", 7)), "indoor");
+    const keys = suggestionsFor(timeOfDay(at("2026-10-19", 7), "day"), "indoor");
 
     expect(keys).not.toContain("activities.cinema");
     expect(keys).not.toContain("activities.museum");
