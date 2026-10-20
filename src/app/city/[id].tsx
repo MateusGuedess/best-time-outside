@@ -1,4 +1,5 @@
 import { Stack, useLocalSearchParams } from "expo-router";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -53,7 +54,10 @@ function CityForecast({ cityName, forecast }: { cityName: string; forecast: Fore
   const language = useLanguage();
   const epochMs = useNow();
   const now = cityNow(epochMs, forecast.utcOffsetSeconds);
-  const recommendation = recommend(forecast, now);
+  const recommendation = useMemo(
+    () => recommend(forecast, { date: now.date, hour: now.hour, minute: 0 }),
+    [forecast, now.date, now.hour],
+  );
   const cityTimeNote =
     forecast.utcOffsetSeconds === deviceUtcOffsetSeconds(epochMs)
       ? null

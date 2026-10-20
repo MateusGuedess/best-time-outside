@@ -27,6 +27,7 @@ export function HourStrip({ candidates, from, to }: HourStripProps) {
   const { t } = useTranslation();
   const language = useLanguage();
   const scrollRef = useRef<ScrollView>(null);
+  const hasScrolledToWindow = useRef(false);
   const [selected, setSelected] = useState<ScoredHour | null>(null);
   const firstInWindow = Math.max(
     0,
@@ -34,6 +35,8 @@ export function HourStrip({ candidates, from, to }: HourStripProps) {
   );
 
   const scrollToWindow = () => {
+    if (hasScrolledToWindow.current) return;
+    hasScrolledToWindow.current = true;
     scrollRef.current?.scrollTo({
       x: Math.max(0, firstInWindow - 1) * ITEM_WIDTH,
       animated: false,

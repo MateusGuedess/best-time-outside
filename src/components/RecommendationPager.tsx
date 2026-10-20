@@ -35,13 +35,14 @@ export function RecommendationPager({
     0,
     pages.findIndex(({ period }) => period === recommendation.best),
   );
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const currentPeriod = pages[currentPage]?.period ?? "day";
+  const [visiblePeriod, setVisiblePeriod] = useState(pages[initialPage]?.period);
+  const currentPeriod =
+    pages.find(({ period }) => period === visiblePeriod)?.period ?? pages[0]?.period ?? "day";
   const colors = usePalette(currentPeriod);
   const isDarkPage = scheme === "dark" || currentPeriod === "night";
 
   const onPageChange = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setCurrentPage(Math.round(nativeEvent.contentOffset.x / width));
+    setVisiblePeriod(pages[Math.round(nativeEvent.contentOffset.x / width)]?.period);
   };
 
   const renderPage = ({ item, index }: { item: PeriodRecommendation; index: number }) => (
