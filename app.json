@@ -14,6 +14,7 @@
       }
     },
     "android": {
+      "package": "com.mateusguedess.besttimeoutside",
       "adaptiveIcon": {
         "backgroundColor": "#F7F2EB",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -47,6 +48,13 @@
     "scheme": "best-time-outside",
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "92c306a2-1204-4a8b-84d3-ad6df95cbb25"
+      }
+    },
+    "owner": "mxteusgued"
   }
 }
