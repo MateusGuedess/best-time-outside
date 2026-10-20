@@ -4,13 +4,24 @@ App em React Native que responde a uma pergunta simples: **qual o melhor horári
 
 Você busca uma cidade, e o app transforma a previsão horária da [Open-Meteo](https://open-meteo.com/) em uma recomendação: _"Ótimo entre 16h e 19h. Temperatura agradável, baixa chance de chuva e vento leve."_, com sugestões do que fazer nesse horário.
 
-<!-- screenshots -->
+<table>
+  <tr>
+    <td align="center"><img src="docs/images/search.jpeg" width="240" alt="Busca de cidade com buscas recentes" /><br /><sub>Busca com cidades recentes</sub></td>
+    <td align="center"><img src="docs/images/day-wellington.jpeg" width="240" alt="Página do dia com recomendação ótima entre 16h e 20h" /><br /><sub>Dia ótimo, com a faixa recomendada</sub></td>
+    <td align="center"><img src="docs/images/night-london-dark.jpeg" width="240" alt="Página da noite em Londres no modo escuro" /><br /><sub>Noite chuvosa, modo escuro</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/images/rain-manaus.gif" width="240" alt="Cena animada com chuva em Manaus" /><br /><sub>Chuva: sugestões indoor</sub></td>
+    <td align="center"><img src="docs/images/wind-wellington.gif" width="240" alt="Cena animada com rajadas de vento" /><br /><sub>Vento: rajadas na cena</sub></td>
+    <td align="center"><img src="docs/images/day-hot.jpeg" width="240" alt="Dia muito quente com recomendação de evitar" /><br /><sub>Calor forte: "Evite"</sub></td>
+  </tr>
+</table>
 
 ## Como rodar
 
 ### Pelo celular, sem instalar nada (Android)
 
-Baixe o APK: **_link em breve_**
+Baixe o APK: **[best-time-outside.apk](https://expo.dev/artifacts/eas/0H6Sd65q9KopIuW1DvqmuHpSMoXSPI9kZUhCheuKKq8.apk)** (build `preview` do EAS; é preciso permitir a instalação de fontes desconhecidas)
 
 ### Com Expo Go (iOS e Android)
 
